@@ -8,11 +8,15 @@ namespace ALMASWeb
         /* ROOT ***********************************************************************************************************************************************/
 
         public DbSet<ActivityLogsModel> ActivityLogsModel { get; set; }
+        public DbSet<InventoryGroupModel> InventoryGroupModel { get; set; }
+        public DbSet<InventoryGroupAccessModel> InventoryGroupAccessModel { get; set; }
+        public DbSet<WarehouseModel> WarehouseModel { get; set; }
+        public DbSet<WarehouseAccessModel> WarehouseAccessModel { get; set; }
 
         /* USER ACCOUNTS **************************************************************************************************************************************/
 
         public DbSet<OperatorModel> OperatorModel { get; set; }
-        public DbSet<OperatorPrivilegePayrollModel> OperatorPrivilegePayrollModel { get; set; }
+        public DbSet<OperatorPrivilegeDataManagementModel> OperatorPrivilegeDataManagementModel { get; set; }
 
         /******************************************************************************************************************************************************/
     }

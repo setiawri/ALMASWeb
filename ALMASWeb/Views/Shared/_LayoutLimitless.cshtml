@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using ALMASWeb.Controllers
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -28,7 +30,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         @*<a href="@Url.Action("ChangePassword", "Manage")" class="dropdown-item"><i class="icon-lock2"></i> Change Password</a>*@
-                        <a href="@Url.Action("LogOff", Helper.LOGIN_CONTROLLERNAME, new { Area = "" })" class="dropdown-item"><i class="icon-switch2"></i> Logout</a>
+                        <a href="@Url.Action("LogOff", OperatorController.LOGIN_CONTROLLERNAME, new { Area = "" })" class="dropdown-item"><i class="icon-switch2"></i> Logout</a>
                     </div>
                 </li>
             </ul>
@@ -48,6 +50,11 @@
                 <li class="nav-item">
                     <a href="@Url.Action("Index", "Home", new { Area = "", rss=1 })" class="navbar-nav-link">
                         <i class="icon-home4 mr-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item @(LIBUtil.Util.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList) ? "" : "d-none")">
+                    <a href="@Url.Action("Index", "Inventory", new { Area = "", rss=1 })" class="navbar-nav-link">
+                        <i class="icon-dropbox mr-2"></i>Inventory
                     </a>
                 </li>
             </ul>
@@ -208,50 +215,23 @@
         }
     });
 
-    function getAllFilterString() { return getFilterString(null, null, null, null, null, null); }
-    function getMainFilterString(year, month, payDate, search) { return getFilterString(year, month, payDate, null, null, search); }
-    function getFilterString(year, month, payDate, approval, Banks_Id, search) {
+    function getAllFilterString() { return getFilterString(null, null, null, null); }
+    function getFilterString(InventoryGroup, InventoryCategory, Warehouse, search) {
         var filter = "";
 
-        filter += getFilter_YearAndMonth(year, month);
+        if (InventoryGroup == null && $('#InventoryGroup') != null)
+            InventoryGroup = $('#InventoryGroup').val();
+        filter += validateFilter(InventoryGroup, "");
 
-        if (payDate == null && $('#PayrollPaymentDates') != null)
-            payDate = parseInt($('#PayrollPaymentDates option:selected').text());
-        if (isNaN(payDate) != true)
-            filter += "&payDate=" + payDate;
+        if (InventoryCategory == null && $('#InventoryCategory') != null)
+            InventoryCategory = $('#InventoryCategory').val();
+        filter += validateFilter(InventoryCategory, "InventoryCategory");
 
-        if (approval == null && $('#FILTER_Approval') != null)
-            approval = parseInt($('#FILTER_Approval').val());
-        if (isNaN(approval) != true)
-            filter += "&approval=" + approval;
-
-        if (Banks_Id == null && $('#Banks') != null)
-            Banks_Id = $('#Banks').val();
-        if (Banks_Id != "")
-            filter += "&Banks_Id=" + Banks_Id;
+        if (Warehouse == null && $('#Warehouse') != null)
+            Warehouse = $('#Warehouse').val();
+        filter += validateFilter(Warehouse, "Warehouse");
 
         filter += getFilter_Search(search);
-
-        return filter;
-    }
-    function getFilter_Year_Month_Search(year, month, search) {
-        var filter = "";
-        filter += getFilter_YearAndMonth(year, month);
-        filter += getFilter_Search(search);
-        return filter;
-    }
-    function getFilter_YearAndMonth(year, month) {
-        var filter = "";
-
-        if (year == null && $('#PayPeriodYear') != null)
-            year = $('#PayPeriodYear').val();
-        if (year != null)
-            filter += year;
-
-        if (month == null && $('#PayPeriodMonth') != null)
-            month = $('#PayPeriodMonth').val();
-        if (month != null)
-            filter += "&month=" + month;
 
         return filter;
     }
@@ -264,6 +244,15 @@
             filter += "&search=" + search;
 
         return filter;
+    }
+    function validateFilter(value, filterName) {
+        if (value != null && value != "" && isNaN(value) != true) {
+            if (filterName == "")
+                return value;
+            else
+                return "&" + prefix + "=" + value;
+        }
+        return "";
     }
 
     function OpenRootArea(action, controller, opennewwindow, search) {

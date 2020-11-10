@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALMASWeb", "ALMASWeb\ALMASWeb.csproj", "{F68C7E84-DA53-4966-A694-F9EEB63C1376}"
+	ProjectSection(ProjectDependencies) = postProject
+		{23013BFC-021E-426A-8A92-8C1C34836974} = {23013BFC-021E-426A-8A92-8C1C34836974}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIBUtil", "..\..\LIBUtil\LIBUtil\LIBUtil\LIBUtil.csproj", "{23013BFC-021E-426A-8A92-8C1C34836974}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{F68C7E84-DA53-4966-A694-F9EEB63C1376}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F68C7E84-DA53-4966-A694-F9EEB63C1376}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F68C7E84-DA53-4966-A694-F9EEB63C1376}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23013BFC-021E-426A-8A92-8C1C34836974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23013BFC-021E-426A-8A92-8C1C34836974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23013BFC-021E-426A-8A92-8C1C34836974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23013BFC-021E-426A-8A92-8C1C34836974}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

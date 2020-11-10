@@ -139,6 +139,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\InventoryTypeController.cs" />
+    <Compile Include="Controllers\InventoryController.cs" />
+    <Compile Include="Controllers\InventoryCategoryController.cs" />
+    <Compile Include="Controllers\WarehouseController.cs" />
+    <Compile Include="Controllers\InventoryGroupController.cs" />
     <Compile Include="DBContext.cs" />
     <Compile Include="Common\Helper.cs" />
     <Compile Include="Common\Enums.cs" />
@@ -148,8 +153,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\InventoryCategoryModel.cs" />
+    <Compile Include="Models\WarehouseAccessModel.cs" />
+    <Compile Include="Models\InventoryGroupAccessModel.cs" />
+    <Compile Include="Models\InventoryTypeModel.cs" />
+    <Compile Include="Models\WarehouseModel.cs" />
+    <Compile Include="Models\InventoryModel.cs" />
+    <Compile Include="Models\InventoryGroupModel.cs" />
+    <Compile Include="Models\OperatorPrivilegeDataManagementModel.cs" />
     <Compile Include="Models\OperatorModel.cs" />
-    <Compile Include="Models\OperatorPrivilegePayrollModel.cs" />
     <Compile Include="Models\ActivityLogsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -243,6 +255,13 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\ALMASWeb.pubxml" />
+    <Content Include="Views\Inventory\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\LIBUtil\LIBUtil\LIBUtil\LIBUtil.csproj">
+      <Project>{23013bfc-021e-426a-8a92-8c1c34836974}</Project>
+      <Name>LIBUtil</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

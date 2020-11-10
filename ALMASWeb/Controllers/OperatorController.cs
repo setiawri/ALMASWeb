@@ -1,13 +1,34 @@
 ﻿using ALMASWeb.Models;
+using LIBUtil;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace ALMASWeb.Controllers
 {
+    public class AccessList
+    {
+        public OperatorPrivilegeDataManagementModel OperatorPrivilegeDataManagement;
+
+        public AccessList() { }
+
+        public void populate(OperatorPrivilegeDataManagementModel operatorPrivilegeDataManagementModel)
+        {
+            OperatorPrivilegeDataManagement = operatorPrivilegeDataManagementModel;
+        }
+    }
+
     public class OperatorController : Controller
     {
         private readonly DBContext db = new DBContext();
+
+        public const string LOGIN_ACTIONNAME = "Login";
+        public const string LOGIN_CONTROLLERNAME = "Operator";
+        public const string LOGIN_AREANAME = "";
+
+        public const string SESSION_UserId = "UserId";
+        public const string SESSION_Username = "Username";
+        public const string SESSION_OperatorPrivilegeDataManagement_InventoryList = "OperatorPrivilegeDataManagement_InventoryList";
 
         /* LOGIN PAGE *****************************************************************************************************************************************/
 
@@ -22,55 +43,40 @@ namespace ALMASWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(OperatorModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
-            {
-                string hashedPassword = HashPassword(model.Password);
-                var result = (
-                        from OperatorModel in db.OperatorModel
-                        join OperatorPrivilegePayrollModel in db.OperatorPrivilegePayrollModel on OperatorModel.UserName equals OperatorPrivilegePayrollModel.UserName
-                        where OperatorModel.UserName.ToLower() == model.UserName.ToLower()
-                            && OperatorModel.Password.ToLower() == hashedPassword.ToLower()
-                            && OperatorPrivilegePayrollModel.PayrollModule == true
-                        select new { OperatorModel, OperatorPrivilegePayrollModel }
-                    ).FirstOrDefault();
+            //bypass login
+            model.UserName = "TO";
+            model.Password = "admin";
 
-                if (result == null)
-                    ModelState.AddModelError("", "Invalid username or password.");
-                else
-                {
-                    login(Session, result.OperatorModel.ID, result.OperatorModel.Name);
-                    return RedirectToLocal(returnUrl);
-                }
+            string hashedPassword = HashPassword(model.Password);
+            var result = (
+                    from OperatorModel in db.OperatorModel
+                    join OperatorPrivilegeDataManagementModel in db.OperatorPrivilegeDataManagementModel
+                        on OperatorModel.UserName equals OperatorPrivilegeDataManagementModel.UserName
+                    where OperatorModel.UserName.ToLower() == model.UserName.ToLower()
+                        && OperatorModel.Password.ToLower() == hashedPassword.ToLower()
+                    select new { OperatorModel, OperatorPrivilegeDataManagementModel }
+                ).FirstOrDefault();
+
+            if (result == null)
+                ModelState.AddModelError("", "Invalid username or password");
+            else
+            {
+                AccessList accessList = new AccessList();
+                accessList.populate(result.OperatorPrivilegeDataManagementModel);
+
+                setLoginSession(Session, result.OperatorModel.ID, result.OperatorModel.UserName, accessList);
+                return RedirectToLocal(returnUrl);
             }
 
             return View(model);
         }
 
-
-        public bool RetrieveOperatorInventoryGroupAccess(string UserName)
-        {
-            return db.Database.SqlQuery<bool>(@"
-					SELECT InventoryGroup.*,
-						ISNULL(InventoryGroup.TypeID,0) as TypeID,
-						ISNULL(InventoryGroupType.Type,'-') as Type,
-						InventoryGroupAccess.*
-                    FROM DWSystem.InventoryGroup
-							LEFT JOIN DWSystem.InventoryGroupType ON InventoryGroupType.TypeID = InventoryGroup.TypeID
-							LEFT JOIN DWSystem.InventoryGroupAccess ON InventoryGroupAccess.GroupID = InventoryGroup.GroupID
-                    WHERE InventoryGroupAccess.UserName = @UserName
-                    ORDER BY InventoryGroup.GroupID ASC
-                    ",
-                DBConnection.getSqlParameter("UserName", UserName)
-                ).FirstOrDefault();
-        }
-        
-
         /* METHODS ********************************************************************************************************************************************/
 
         public ActionResult LogOff()
         {
-            login(Session, null, null);
-            return RedirectToAction("Login");
+            setLoginSession(Session, null, null, new AccessList());
+            return RedirectToAction(nameof(Login));
         }
 
         private ActionResult RedirectToLocal(string returnUrl)
@@ -78,39 +84,54 @@ namespace ALMASWeb.Controllers
             if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         public static string HashPassword(string input)
         {
-            var hash = new System.Security.Cryptography.SHA1Managed().ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
-            return string.Concat(hash.Select(b => b.ToString("x2")));
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+            else
+            {
+                var hash = new System.Security.Cryptography.SHA1Managed().ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
+                return string.Concat(hash.Select(b => b.ToString("x2")));
+            }
         }
 
         public static int getUserId(HttpSessionStateBase Session)
         {
-            return int.Parse(Session[Helper.SESSION_UserId].ToString());
+            return int.Parse(Session[SESSION_UserId].ToString());
+        }
+
+        public static string getUsername(HttpSessionStateBase Session)
+        {
+            return Session[SESSION_Username].ToString();
         }
 
         public static bool isLoggedIn(HttpSessionStateBase session)
         {
-            return session[Helper.SESSION_UserId] != null;
+            return session[SESSION_UserId] != null;
         }
 
-        private static void login(HttpSessionStateBase session, object userId, object username)
+        private static void setLoginSession(HttpSessionStateBase Session, object userId, object username, AccessList accessList)
         {
-            session[Helper.SESSION_UserId] = userId == null ? null : userId.ToString();
-            session[Helper.SESSION_Username] = username == null ? null : userId.ToString();
+            Session[SESSION_UserId] = userId == null ? null : userId.ToString();
+            Session[SESSION_Username] = username == null ? null : username.ToString();
+
+            if(Session[SESSION_UserId] != null)
+            {
+                Session[SESSION_OperatorPrivilegeDataManagement_InventoryList] = accessList.OperatorPrivilegeDataManagement.InventoryList;
+            }
         }
 
         public static void setApprovalPrivilegeListViewBag(DBContext db, ControllerBase controller, HttpSessionStateBase Session)
         {
             int userID = getUserId(Session);
-            var privilegePayroll = (from Operator in db.OperatorModel
-                                    join OperatorPrivilegePayroll in db.OperatorPrivilegePayrollModel on Operator.UserName equals OperatorPrivilegePayroll.UserName
-                                    where Operator.ID == userID
-                                    select new { Operator, OperatorPrivilegePayroll }).FirstOrDefault();
-            controller.ViewBag.ApprovalPrivilege = privilegePayroll == null ? false : privilegePayroll.OperatorPrivilegePayroll.Approval;
+            //var privilegePayroll = (from Operator in db.OperatorModel
+            //                        join OperatorPrivilegePayroll in db.OperatorPrivilegePayrollModel on Operator.UserName equals OperatorPrivilegePayroll.UserName
+            //                        where Operator.ID == userID
+            //                        select new { Operator, OperatorPrivilegePayroll }).FirstOrDefault();
+            //controller.ViewBag.ApprovalPrivilege = privilegePayroll == null ? false : privilegePayroll.OperatorPrivilegePayroll.Approval;
         }
 
         /******************************************************************************************************************************************************/

@@ -24,9 +24,9 @@ namespace ALMASWeb
                     context.Result = new RedirectToRouteResult(
                         new RouteValueDictionary(new
                         {
-                            action = Helper.LOGIN_ACTIONNAME,
-                            controller = Helper.LOGIN_CONTROLLERNAME,
-                            Area = Helper.LOGIN_AREANAME,
+                            action = OperatorController.LOGIN_ACTIONNAME,
+                            controller = OperatorController.LOGIN_CONTROLLERNAME,
+                            Area = OperatorController.LOGIN_AREANAME,
                             returnUrl = context.HttpContext.Request.RawUrl
                         })
                     );

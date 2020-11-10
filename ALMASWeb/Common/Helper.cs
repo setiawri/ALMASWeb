@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using System.IO;
+using ALMASWeb.Controllers;
 
 namespace ALMASWeb
 {
@@ -19,13 +20,7 @@ namespace ALMASWeb
         /* PUBLIC PROPERTIES **********************************************************************************************************************************/
 
         public const string APP_VERSION = "v201110";
-        public const string COMPANYNAME = "PT.ALMAS";
-
-        public const string SESSION_UserId = "UserId";
-        public const string SESSION_Username = "Username";
-        public const string LOGIN_ACTIONNAME = "Login";
-        public const string LOGIN_CONTROLLERNAME = "Operator";
-        public const string LOGIN_AREANAME = "";
+        public const string COMPANYNAME = "PT. ALMAS";
 
         public const string IMAGEFOLDERURL = "/assets/img/";
         public const string IMAGEFOLDERPATH = "~"+ IMAGEFOLDERURL;

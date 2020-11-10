@@ -27,5 +27,9 @@ namespace ALMASWeb.Models
         public string Mobile { get; set; }
 
         public bool Active { get; set; }
+
+        public int? DivisionID { get; set; }
+
+        public int? ThemeID { get; set; }
     }
 }
