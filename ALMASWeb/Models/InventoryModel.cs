@@ -20,6 +20,7 @@ namespace ALMASWeb.Models
         public static ModelMember COL_CategoryID = new ModelMember { Name = "CategoryID", Display = "" };
 
         public string TypeID { get; set; }
+        public static ModelMember COL_TypeID = new ModelMember { Name = "TypeID", Display = "" };
 
         public string InventoryName { get; set; }
 
@@ -35,7 +36,7 @@ namespace ALMASWeb.Models
 
         public int? SecUnitID { get; set; }
 
-        public int? SecRation { get; set; }
+        public int? SecRatio { get; set; }
 
         public int? ThirdUnitID { get; set; }
 
@@ -118,6 +119,20 @@ namespace ALMASWeb.Models
         public bool HasComponent { get; set; }
 
         public bool? HasSpecification { get; set; }
+
+        public long Stock { get; set; }
+
+        public string FormattedStock { get; set; }
+
+        public string Unit1 { get; set; }
+
+        public string Unit2 { get; set; }
+
+        public string Unit3 { get; set; }
+
+        public string Unit2Info { get; set; }
+
+        public string Unit3Info { get; set; }
 
         public int? WarehouseID { get; set; }
         public static ModelMember COL_WarehouseID = new ModelMember { Name = "WarehouseID", Display = "" };

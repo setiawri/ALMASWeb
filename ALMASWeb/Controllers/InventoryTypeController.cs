@@ -11,35 +11,47 @@ namespace ALMASWeb.Controllers
     {
         private readonly DBContext db = new DBContext();
 
-        public static List<InventoryTypeModel> get(DBContext db, string UserName)
+        public static List<InventoryTypeModel> get(DBContext db, string UserName, int? GroupID)
         {
             return db.Database.SqlQuery<InventoryTypeModel>(@"
 					SELECT InventoryType.*
 					FROM DWSystem.InventoryType
-					WHERE InventoryType.TypeID IN (					
-						SELECT Inventory.TypeID
-						FROM DWSystem.Inventory
-						WHERE Inventory.InventoryID IN (						
-								SELECT WarehouseStock.InventoryID
-								FROM DWSystem.WarehouseStock
-								WHERE WarehouseStock.WarehouseID IN (						
-										SELECT Warehouse.WarehouseID
-										FROM DWSystem.Warehouse
-											LEFT JOIN DWSystem.WarehouseAccess ON WarehouseAccess.WarehouseID = Warehouse.WarehouseID
-										WHERE 1=1
-											AND (@UserName IS NULL OR WarehouseAccess.UserName = @UserName)
-									)
+					WHERE 1=1
+						AND (@UserName IS NULL 
+							OR (
+								InventoryType.GroupID IN (										
+									SELECT InventoryGroup.GroupID
+									FROM DWSystem.InventoryGroup
+										LEFT JOIN DWSystem.InventoryGroupAccess ON InventoryGroupAccess.GroupID = InventoryGroup.GroupID
+									WHERE InventoryGroupAccess.UserName = @UserName
+								)
+								AND InventoryType.TypeID IN (								
+									SELECT Inventory.TypeID
+									FROM DWSystem.Inventory
+									WHERE Inventory.InventoryID IN (						
+										SELECT WarehouseStock.InventoryID
+										FROM DWSystem.WarehouseStock
+										WHERE WarehouseStock.WarehouseID IN (						
+											SELECT Warehouse.WarehouseID
+											FROM DWSystem.Warehouse
+												LEFT JOIN DWSystem.WarehouseAccess ON WarehouseAccess.WarehouseID = Warehouse.WarehouseID
+											WHERE WarehouseAccess.UserName = @UserName
+										)
+									)										
+								)
 							)
-					)
+						)
+						AND (@GroupID IS NULL OR InventoryType.GroupID = @GroupID)
 					ORDER BY InventoryType.Name ASC
                     ",
-                    DBConnection.getSqlParameter(WarehouseAccessModel.COL_UserName.Name, UserName)
-                ).ToList();
+                    DBConnection.getSqlParameter("UserName", UserName),
+					DBConnection.getSqlParameter(InventoryTypeModel.COL_GroupID.Name, GroupID)
+				).ToList();
         }
 
-        public static void setDropDownListViewBag(DBContext db, ControllerBase controller, string UserName)
+        public static void setDropDownListViewBag(DBContext db, ControllerBase controller, string UserName, int? GroupID)
         {
-            List<InventoryTypeModel> models = get(db, UserName);
+            List<InventoryTypeModel> models = get(db, UserName, GroupID);
             controller.ViewBag.InventoryType = new SelectList(models,
                     InventoryTypeModel.COL_TypeID.Name, InventoryTypeModel.COL_Name.Name);
             controller.ViewBag.InventoryTypeCount = models.Count;

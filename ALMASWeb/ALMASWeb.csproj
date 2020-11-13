@@ -142,6 +142,7 @@
     <Compile Include="Controllers\InventoryTypeController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\InventoryCategoryController.cs" />
+    <Compile Include="Controllers\WarehouseStockController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="Controllers\InventoryGroupController.cs" />
     <Compile Include="DBContext.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Models\WarehouseAccessModel.cs" />
     <Compile Include="Models\InventoryGroupAccessModel.cs" />
     <Compile Include="Models\InventoryTypeModel.cs" />
+    <Compile Include="Models\WarehouseStockModel.cs" />
     <Compile Include="Models\WarehouseModel.cs" />
     <Compile Include="Models\InventoryModel.cs" />
     <Compile Include="Models\InventoryGroupModel.cs" />

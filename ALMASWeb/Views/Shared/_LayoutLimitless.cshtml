@@ -176,7 +176,7 @@
                 }).off("shown.bs.modal"); //scroll to top
             }, //end success
             error: function (result) {
-                bootbox.alert("Error " + result);
+                bootbox.alert({ backdrop: true, message: "Error " + result });
             } //end error
         }); //end ajax
     }
@@ -215,8 +215,8 @@
         }
     });
 
-    function getAllFilterString() { return getFilterString(null, null, null, null); }
-    function getFilterString(InventoryGroup, InventoryCategory, Warehouse, search) {
+    function getAllFilterString() { return getFilterString(null, null, null, null, null); }
+    function getFilterString(InventoryGroup, InventoryCategory, Warehouse, InventoryType, search) {
         var filter = "";
 
         if (InventoryGroup == null && $('#InventoryGroup') != null)
@@ -226,6 +226,10 @@
         if (InventoryCategory == null && $('#InventoryCategory') != null)
             InventoryCategory = $('#InventoryCategory').val();
         filter += validateFilter(InventoryCategory, "InventoryCategory");
+
+        if (InventoryType == null && $('#InventoryType') != null)
+            InventoryType = $('#InventoryType').val();
+        filter += validateFilter(InventoryType, "InventoryType");
 
         if (Warehouse == null && $('#Warehouse') != null)
             Warehouse = $('#Warehouse').val();
@@ -240,8 +244,7 @@
 
         if ((search == null || search == "") && $('input[aria-controls=DataTables_Table_0]').val() != undefined)
             search = $('input[aria-controls=DataTables_Table_0]').val();
-        if (search != "")
-            filter += "&search=" + search;
+        filter += validateFilter(search, "search");
 
         return filter;
     }
@@ -250,7 +253,7 @@
             if (filterName == "")
                 return value;
             else
-                return "&" + prefix + "=" + value;
+                return "&" + filterName + "=" + value;
         }
         return "";
     }
@@ -259,36 +262,6 @@
         var url = '@Url.Action("Action", "Controller",new { Area = "", year = "__data" })';
         url = url.replace('Action', action).replace('Controller', controller);
         url = url.replace('__data', getFilter_Year_Month_Search(null, null, search));
-        OpenWindow(url, opennewwindow);
-    }
-
-    function OpenPayrollArea(action, controller, opennewwindow, payPeriod, search) {
-        var year = null;
-        var month = null;
-        if (payPeriod != null) {
-            var date = new Date(payPeriod);
-            year = date.getFullYear();
-            month = (date.getMonth() + 1);
-        }
-
-        var url = '@Url.Action("Action", "Controller",new { Area = "Payroll", year = "__data" })';
-        url = url.replace('Action', action).replace('Controller', controller);
-        url = url.replace('__data', getFilter_Year_Month_Search(year, month, search));
-        OpenWindow(url, opennewwindow);
-    }
-
-    function OpenReimbursementArea(action, controller, opennewwindow, payPeriod, search) {
-        var year = null;
-        var month = null;
-        if (payPeriod != null) {
-            var date = new Date(payPeriod);
-            year = date.getFullYear();
-            month = (date.getMonth() + 1);
-        }
-
-        var url = '@Url.Action("Action", "Controller",new { Area = "Reimbursement", year = "__data" })';
-        url = url.replace('Action', action).replace('Controller', controller);
-        url = url.replace('__data', getFilter_Year_Month_Search(year, month, search));
         OpenWindow(url, opennewwindow);
     }
 

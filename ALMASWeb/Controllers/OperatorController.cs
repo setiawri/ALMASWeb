@@ -44,8 +44,8 @@ namespace ALMASWeb.Controllers
         public ActionResult Login(OperatorModel model, string returnUrl)
         {
             //bypass login
-            model.UserName = "TO";
-            model.Password = "admin";
+            //model.UserName = "ABCDE";
+            //model.Password = "admin";
 
             string hashedPassword = HashPassword(model.Password);
             var result = (
@@ -81,6 +81,8 @@ namespace ALMASWeb.Controllers
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
+            //routed to Inventory Index in RouteConfig.cs by default
+
             if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
 
@@ -122,16 +124,6 @@ namespace ALMASWeb.Controllers
             {
                 Session[SESSION_OperatorPrivilegeDataManagement_InventoryList] = accessList.OperatorPrivilegeDataManagement.InventoryList;
             }
-        }
-
-        public static void setApprovalPrivilegeListViewBag(DBContext db, ControllerBase controller, HttpSessionStateBase Session)
-        {
-            int userID = getUserId(Session);
-            //var privilegePayroll = (from Operator in db.OperatorModel
-            //                        join OperatorPrivilegePayroll in db.OperatorPrivilegePayrollModel on Operator.UserName equals OperatorPrivilegePayroll.UserName
-            //                        where Operator.ID == userID
-            //                        select new { Operator, OperatorPrivilegePayroll }).FirstOrDefault();
-            //controller.ViewBag.ApprovalPrivilege = privilegePayroll == null ? false : privilegePayroll.OperatorPrivilegePayroll.Approval;
         }
 
         /******************************************************************************************************************************************************/

@@ -21,52 +21,55 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row mt-0">
-                    <div class="row col-lg-2 @(ViewBag.InventoryGroupCount == 1 ? "d-none" : "")">
-                        <div class="col-lg-12">
-                            <label class="mb-0">Group Inventaris</label>
-                            <div class="input-group">
-                                @Html.DropDownList("InventoryGroup", ViewBag.InventoryGroup as SelectList, null, new { @class = "custom-select", @style = "height:auto;", onchange = "ReloadInventoryCategory()" })
+                @if (ViewBag.InventoryGroup != null)
+                {
+                    <div class="row mt-0">
+                        <div class="row col-lg-2 @(ViewBag.InventoryGroupCount == 1 ? "d-none" : "")">
+                            <div class="col-lg-12">
+                                <label class="mb-0">Group Inventaris</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("InventoryGroup", ViewBag.InventoryGroup as SelectList, null, new { @class = "custom-select", @style = "height:auto;", onchange = "ReloadInventoryCategory()" })
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row col-lg-2 @(ViewBag.InventoryCategoryCount == 1 ? "d-none" : "")">
-                        <div class="col-lg-12">
-                            <label class="mb-0">Buyer</label>
-                            <div class="input-group">
-                                @Html.DropDownList("InventoryCategory", ViewBag.InventoryCategory as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                        <div class="row col-lg-2 @(ViewBag.InventoryCategoryCount == 1 ? "d-none" : "")">
+                            <div class="col-lg-12">
+                                <label class="mb-0">@ViewBag.InventoryCategoryName</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("InventoryCategory", ViewBag.InventoryCategory as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row col-lg-2 @(ViewBag.WarehouseCount == 1 ? "d-none" : "")">
-                        <div class="col-lg-12">
-                            <label class="mb-0">Gudang</label>
-                            <div class="input-group">
-                                @Html.DropDownList("Warehouse", ViewBag.Warehouse as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                        <div class="row col-lg-2 @(ViewBag.InventoryTypeCount == 1 ? "d-none" : "")">
+                            <div class="col-lg-12">
+                                <label class="mb-0">@ViewBag.InventoryTypeName</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("InventoryType", ViewBag.InventoryType as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row col-lg-2 @(ViewBag.InventoryTypeCount == 1 ? "d-none" : "")">
-                        <div class="col-lg-12">
-                            <label class="mb-0">Jenis</label>
-                            <div class="input-group">
-                                @Html.DropDownList("InventoryType", ViewBag.InventoryType as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                        <div class="row col-lg-2 @(ViewBag.WarehouseCount == 1 ? "d-none" : "")">
+                            <div class="col-lg-12">
+                                <label class="mb-0">Gudang</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("Warehouse", ViewBag.Warehouse as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row col-lg-2">
-                        <div class="col-lg-12">
-                            <label class="mb-0">&nbsp;</label>
-                            <div class="form-group mb-0">
-                                <div class="btn-toolbar">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-outline-primary form-control" onclick="ReloadTable()"><i class="icon-reload-alt mr-2"></i>Reload Data</button>
+                        <div class="row col-lg-2">
+                            <div class="col-lg-12">
+                                <label class="mb-0">&nbsp;</label>
+                                <div class="form-group mb-0">
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-outline-primary form-control" onclick="ReloadTable()"><i class="icon-reload-alt mr-2"></i>LOAD DATA</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
                 <div class="table-responsive mt-2">
                     <table class="table table-hover datatable">
                         <thead>
@@ -77,6 +80,7 @@
                                 <th>Jenis</th>
                                 <th>Product</th>
                                 <th class="text-right">Total Stok</th>
+                                <th class="text-right">Harga</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,12 +89,21 @@
                                 foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td><img style="max-width:100px; max-height:100px;" src="@LIBUtil.Util.getImageSource(item.Picture, null)"></td>
+                                        <td><img style="max-width:100px; max-height:100px;" onclick="ViewImage('@LIBUtil.Util.getImageSource(item.Picture, null)')" src="@LIBUtil.Util.getImageSource(item.Picture, null)"></td>
                                         <td>@Html.DisplayFor(modelItem => item.InventoryID)</td>
                                         <td>@Html.DisplayFor(modelItem => item.CategoryName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TypeName)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                        <td class="text-right">@Html.DisplayFor(modelItem => item.MinimumStock)</td>
+                                        <td>
+                                            <div>@Html.DisplayFor(modelItem => item.InventoryName)</div>
+                                            <div>@Html.DisplayFor(modelItem => item.Description)</div>
+
+                                        </td>
+                                        <td class="text-right">
+                                            <div><a href="javascript:void(0)" onclick="WarehouseList('@item.InventoryID')">@string.Format("{0:N0}", item.Stock) @Html.DisplayFor(modelItem => item.Unit1)</a></div>
+                                            <div class="small mt-1">@Html.DisplayFor(modelItem => item.Unit2Info)</div>
+                                            <div class="small">@Html.DisplayFor(modelItem => item.Unit3Info)</div>
+                                        </td>
+                                        <td class="text-right">@string.Format("{0:N0}", item.Price)</td>
                                     </tr>
                                 }
                             }
@@ -112,6 +125,7 @@
 
         if('@ViewBag.Search' != null && '@ViewBag.Search' != '')
             $('input[aria-controls=DataTables_Table_0]').val('@ViewBag.Search').keyup(); //apply search
+
     });
 
 
@@ -131,7 +145,7 @@
                  });
             }, //end success
             error: function (result) {
-                bootbox.alert("Error " + result);
+                bootbox.alert({ backdrop: true, message: "Error " + result });
             } //end error
         }); //end ajax
     }
@@ -139,6 +153,34 @@
     function ReloadTable() {
         var url = '@Url.Action("Index","Inventory",new { InventoryGroup = "__data" })';
         window.location.href = url.replace("__data", getAllFilterString());
+    }
+
+    function ViewImage (image) {
+        bootbox.alert({
+            size: 'large',
+            backdrop: true,
+            message: "<div style='width:100%; text-align:center;'><img style='max-width: 858px;' src=" + image + "></div>"
+        });
+    }
+
+    function WarehouseList(InventoryID) {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetList", "WarehouseStock", new { Area = "" })',
+            data: {
+                InventoryID: InventoryID
+            },
+            success: function (data) {
+                var dialog = bootbox.alert({
+                    title: 'Stock',
+                    message: data.content,
+                    backdrop: true
+                }).off("shown.bs.modal"); //scroll to top
+            }, //end success
+            error: function (result) {
+                bootbox.alert("Error " + result);
+            } //end error
+        }); //end ajax
     }
 
 </script>
