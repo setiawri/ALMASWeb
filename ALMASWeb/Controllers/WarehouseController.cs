@@ -25,14 +25,6 @@ namespace ALMASWeb.Controllers
                 ).ToList();
         }
 
-        public static void setDropDownListViewBag(DBContext db, ControllerBase controller, string UserName)
-        {
-            List<WarehouseModel> models = get(db, UserName);
-            controller.ViewBag.Warehouse = new SelectList(models,
-                    WarehouseModel.COL_WarehouseID.Name, WarehouseModel.COL_WarehouseName.Name);
-            controller.ViewBag.WarehouseCount = models.Count;
-        }
-
         /******************************************************************************************************************************************************/
     }
 }

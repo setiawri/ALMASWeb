@@ -49,14 +49,6 @@ namespace ALMASWeb.Controllers
                 ).ToList();
 		}
 
-		public static void setDropDownListViewBag(DBContext db, ControllerBase controller, string UserName, int? GroupID)
-        {
-            List<InventoryCategoryModel> models = get(db, UserName, GroupID);
-            controller.ViewBag.InventoryCategory = new SelectList(models,
-                    InventoryCategoryModel.COL_CategoryID.Name, InventoryCategoryModel.COL_Name.Name);
-            controller.ViewBag.InventoryCategoryCount = models.Count;
-        }
-
         /******************************************************************************************************************************************************/
     }
 }

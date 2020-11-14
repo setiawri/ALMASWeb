@@ -81,12 +81,11 @@ namespace ALMASWeb.Controllers
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
-            //routed to Inventory Index in RouteConfig.cs by default
-
             if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            //also routed to Inventory Index in RouteConfig.cs by default
+            return RedirectToAction(nameof(InventoryController.Index), "Inventory");
         }
 
         public static string HashPassword(string input)

@@ -108,9 +108,7 @@ namespace ALMASWeb.Models
         /* ADDITIONAL PROPERTIES ******************************************************************************************************************************/
 
 
-        public string Code { get; set; }
-
-        public string Name { get; set; }
+        public string PriceTag { get; set; }
 
         public string CategoryName { get; set; }
 
@@ -120,19 +118,11 @@ namespace ALMASWeb.Models
 
         public bool? HasSpecification { get; set; }
 
-        public long Stock { get; set; }
+        public string Stock { get; set; }
 
         public string FormattedStock { get; set; }
 
-        public string Unit1 { get; set; }
-
-        public string Unit2 { get; set; }
-
-        public string Unit3 { get; set; }
-
-        public string Unit2Info { get; set; }
-
-        public string Unit3Info { get; set; }
+        public string PackingInfo { get; set; }
 
         public int? WarehouseID { get; set; }
         public static ModelMember COL_WarehouseID = new ModelMember { Name = "WarehouseID", Display = "" };

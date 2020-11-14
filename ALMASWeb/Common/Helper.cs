@@ -19,7 +19,7 @@ namespace ALMASWeb
 
         /* PUBLIC PROPERTIES **********************************************************************************************************************************/
 
-        public const string APP_VERSION = "v201110";
+        public const string APP_VERSION = "v201114";
         public const string COMPANYNAME = "PT. ALMAS";
 
         public const string IMAGEFOLDERURL = "/assets/img/";

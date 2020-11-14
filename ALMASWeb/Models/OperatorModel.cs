@@ -10,6 +10,7 @@ namespace ALMASWeb.Models
 
         [Required]
         public string UserName { get; set; }
+        public static ModelMember COL_UserName = new ModelMember { Name = "UserName", Display = "" };
 
         [Required]
         public string Password { get; set; }

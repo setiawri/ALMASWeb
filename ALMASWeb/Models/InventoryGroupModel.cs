@@ -19,9 +19,11 @@ namespace ALMASWeb.Models
 
         [Required]
         public string CategoryName { get; set; }
+        public static ModelMember COL_CategoryName = new ModelMember { Name = "CategoryName", Display = "" };
 
         [Required]
         public string TypeName { get; set; }
+        public static ModelMember COL_TypeName = new ModelMember { Name = "TypeName", Display = "" };
 
         [Required]
         public bool HasComponent { get; set; }

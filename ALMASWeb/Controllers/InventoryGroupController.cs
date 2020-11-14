@@ -25,23 +25,6 @@ namespace ALMASWeb.Controllers
                 ).ToList();
         }
 
-        public static void setDropDownListViewBag(DBContext db, ControllerBase controller, string UserName)
-        {
-            List<InventoryGroupModel> models = get(db, UserName);
-            controller.ViewBag.InventoryGroup = new SelectList(models,
-                    InventoryGroupModel.COL_GroupID.Name, InventoryGroupModel.COL_Name.Name);
-
-            if(models.Count > 0)
-            {
-                InventoryCategoryController.setDropDownListViewBag(db, controller, UserName, models[0].GroupID);
-                InventoryTypeController.setDropDownListViewBag(db, controller, UserName, models[0].GroupID);
-
-                controller.ViewBag.InventoryGroupCount = models.Count;
-                controller.ViewBag.InventoryCategoryName = models[0].CategoryName;
-                controller.ViewBag.InventoryTypeName = models[0].TypeName;
-            }
-        }
-
         /******************************************************************************************************************************************************/
     }
 }
