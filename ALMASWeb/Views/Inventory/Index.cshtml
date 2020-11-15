@@ -32,7 +32,7 @@
                                 <div class="col-lg-12">
                                     <label class="mb-0">Gudang</label>
                                     <div class="input-group">
-                                        @Html.DropDownList("Warehouse", ViewBag.Warehouse as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                                        @Html.DropDownList("Warehouse", ViewBag.Warehouse as SelectList, "ALL", new { @class = "select2", @style = "height:auto;" })
                                     </div>
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                                 <div class="col-lg-12">
                                     <label class="mb-0">Group</label>
                                     <div class="input-group">
-                                        @Html.DropDownList("InventoryGroup", ViewBag.InventoryGroup as SelectList, null, new { @class = "custom-select", @style = "height:auto;", onchange = "UpdateCategoryNameAndTypeName()" })
+                                        @Html.DropDownList("InventoryGroup", ViewBag.InventoryGroup as SelectList, null, new { @class = "select2", @style = "height:auto;", onchange = "UpdateCategoryNameAndTypeName()" })
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                                 <div class="col-lg-12">
                                     <label class="mb-0 InventoryCategoryName">@ViewBag.InventoryCategoryName</label>
                                     <div class="input-group">
-                                        @Html.DropDownList("InventoryCategory", ViewBag.InventoryCategory as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                                        @Html.DropDownList("InventoryCategory", ViewBag.InventoryCategory as SelectList, "ALL", new { @class = "select2", @style = "height:auto;" })
                                     </div>
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                                 <div class="col-lg-12">
                                     <label class="mb-0 InventoryTypeName">@ViewBag.InventoryTypeName</label>
                                     <div class="input-group">
-                                        @Html.DropDownList("InventoryType", ViewBag.InventoryType as SelectList, "ALL", new { @class = "custom-select", @style = "height:auto;" })
+                                        @Html.DropDownList("InventoryType", ViewBag.InventoryType as SelectList, "ALL", new { @class = "select2", @style = "height:auto;" })
                                     </div>
                                 </div>
                             </div>
