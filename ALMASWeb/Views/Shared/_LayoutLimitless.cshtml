@@ -215,54 +215,16 @@
         }
     });
 
-    function getAllFilterString() { return getFilterString(null, null, null, null, null); }
-    function getFilterString(InventoryGroup, InventoryCategory, Warehouse, InventoryType, search) {
-        var filter = "";
-
-        if (InventoryGroup == null && $('#InventoryGroup') != null)
-            InventoryGroup = $('#InventoryGroup').val();
-        filter += validateFilter(InventoryGroup, "");
-
-        if (InventoryCategory == null && $('#InventoryCategory') != null)
-            InventoryCategory = $('#InventoryCategory').val();
-        filter += validateFilter(InventoryCategory, "InventoryCategory");
-
-        if (InventoryType == null && $('#InventoryType') != null)
-            InventoryType = $('#InventoryType').val();
-        filter += validateFilter(InventoryType, "InventoryType");
-
-        if (Warehouse == null && $('#Warehouse') != null)
-            Warehouse = $('#Warehouse').val();
-        filter += validateFilter(Warehouse, "Warehouse");
-
-        filter += getFilter_Search(search);
-
-        return filter;
-    }
-    function getFilter_Search(search) {
-        var filter = "";
-
+    function getSearch() {
         if ((search == null || search == "") && $('input[aria-controls=DataTables_Table_0]').val() != undefined)
-            search = $('input[aria-controls=DataTables_Table_0]').val();
-        filter += validateFilter(search, "search");
-
-        return filter;
-    }
-    function validateFilter(value, filterName) {
-        if (value != null && value != "" && isNaN(value) != true) {
-            if (filterName == "")
-                return value;
-            else
-                return "&" + filterName + "=" + value;
-        }
-        return "";
+            return $('input[aria-controls=DataTables_Table_0]').val();
+        else
+            return "";
     }
 
-    function OpenRootArea(action, controller, opennewwindow, search) {
-        var url = '@Url.Action("Action", "Controller",new { Area = "", year = "__data" })';
-        url = url.replace('Action', action).replace('Controller', controller);
-        url = url.replace('__data', getFilter_Year_Month_Search(null, null, search));
-        OpenWindow(url, opennewwindow);
+    function setSearch(search) {
+        if ($('input[aria-controls=DataTables_Table_0]').val() != undefined)
+            $('input[aria-controls=DataTables_Table_0]').val(search).keyup(); //apply search
     }
 
     function OpenWindow(url, opennewwindow) {

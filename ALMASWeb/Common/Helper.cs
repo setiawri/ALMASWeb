@@ -3,6 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.IO;
 using ALMASWeb.Controllers;
+using LIBUtil;
 
 namespace ALMASWeb
 {
@@ -40,6 +41,15 @@ namespace ALMASWeb
             }
 
             return (Request.ApplicationPath + IMAGEFOLDERURL + filename).Replace("//", "/");
+        }
+        public static void setFilterViewBag(ControllerBase controller, int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, string search)
+        {
+            var ViewBag = controller.ViewBag;
+            ViewBag.Filter_InventoryGroup = Util.validateParameter(InventoryGroup);
+            ViewBag.Filter_InventoryCategory = Util.validateParameter(InventoryCategory);
+            ViewBag.Filter_InventoryType = Util.validateParameter(InventoryType);
+            ViewBag.Filter_Warehouse = Util.validateParameter(Warehouse);
+            ViewBag.Filter_Search = Util.validateParameter(search);
         }
 
         /******************************************************************************************************************************************************/

@@ -16,25 +16,38 @@ namespace ALMASWeb.Controllers
         /* INDEX **********************************************************************************************************************************************/
 
         // GET: Inventory
-        public ActionResult Index(int? rss, int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse)
+        public ActionResult Index(int? rss, int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, string search)
         {
-			if(!Util.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList))
-				return RedirectToAction(nameof(HomeController.Index), "Home");
-
 			ViewBag.RemoveDatatablesStateSave = rss;
-
-			setViewBag();
-
-			List<InventoryModel> models = null;
-            if (InventoryGroup != null)
-				models = get(null, InventoryGroup, InventoryCategory, InventoryType, Warehouse, OperatorController.getUsername(Session));
-
-			return View(models);
+			return View(prepareIndex(InventoryGroup, InventoryCategory, InventoryType, Warehouse, search));
         }
 
-        /* METHODS ********************************************************************************************************************************************/
+		// POST: Inventory
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Index(int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, string search)
+		{
+			return View(prepareIndex(InventoryGroup, InventoryCategory, InventoryType, Warehouse, search));
+		}
 
-        private List<InventoryModel> get(Guid? id, int? GroupID, string CategoryID, string InventoryType, int? WarehouseID, string UserName)
+		private List<InventoryModel> prepareIndex(int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, string search)
+		{
+			if (!Util.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList))
+				RedirectToAction(nameof(HomeController.Index), "Home");
+
+			setViewBag();
+			Helper.setFilterViewBag(this, InventoryGroup, InventoryCategory, InventoryType, Warehouse, search);
+
+			List<InventoryModel> models = null;
+			if (InventoryGroup != null)
+				models = get(null, InventoryGroup, InventoryCategory, InventoryType, Warehouse, OperatorController.getUsername(Session));
+
+			return models;
+		}
+
+		/* METHODS ********************************************************************************************************************************************/
+
+		private List<InventoryModel> get(Guid? id, int? GroupID, string CategoryID, string InventoryType, int? WarehouseID, string UserName)
         {
             List<InventoryModel> models = db.Database.SqlQuery<InventoryModel>(sqlGetInventory,
                     DBConnection.getSqlParameter(InventoryModel.COL_InventoryID.Name, id),
