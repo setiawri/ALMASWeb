@@ -66,8 +66,8 @@
                                     <div class="form-group d-flex align-items-center mt-2">
                                         <div class="form-check mb-0">
                                             <label class="form-check-label">
-                                                <input type="checkbox" id="chkOnlyHasStock" name="chkOnlyHasStock" class="form-input-styled" checked data-fouc>
-                                                Ready Stock Only
+                                                @Html.CheckBox("chkOnlyHasStock", true, new { @class = "form-input-styled" }) 
+                                                Ready Stock Only                                            
                                             </label>
                                         </div>
                                     </div>
@@ -142,7 +142,7 @@
         $('#InventoryType').val('@ViewBag.Filter_InventoryType');
         $('#Warehouse').val('@ViewBag.Filter_Warehouse');
 
-        setCheckboxState('chkOnlyHasStock', '@ViewBag.FILTER_OnlyHasStock');
+        setCheckbox('chkOnlyHasStock', '@ViewBag.FILTER_OnlyHasStock', true);
 
         if('@ViewBag.Filter_Search' != null && '@ViewBag.Filter_Search' != '')
             setSearch('@ViewBag.Filter_Search'); //apply search

@@ -179,7 +179,7 @@
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.svg" />
     <Content Include="assets\css\icons\icomoon\styles.css" />
     <Content Include="assets\css\layout.min.css" />
-    <Content Include="assets\img\Logo.png" />
+    <Content Include="assets\img\LoginBG.jpeg" />
     <Content Include="assets\img\no-image.jpg" />
     <Content Include="assets\img\profile.png" />
     <Content Include="assets\js\app.js" />
