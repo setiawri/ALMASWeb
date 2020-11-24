@@ -16,38 +16,38 @@ namespace ALMASWeb.Controllers
         /* INDEX **********************************************************************************************************************************************/
 
         // GET: Inventory
-        public ActionResult Index(int? rss, int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, string search)
+        public ActionResult Index(int? rss, int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, bool? chkOnlyHasStock, string search)
         {
 			ViewBag.RemoveDatatablesStateSave = rss;
-			return View(prepareIndex(InventoryGroup, InventoryCategory, InventoryType, Warehouse, search));
+			return View(prepareIndex(InventoryGroup, InventoryCategory, InventoryType, Warehouse, chkOnlyHasStock, search));
         }
 
 		// POST: Inventory
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Index(int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, string search)
+		public ActionResult Index(int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, bool? chkOnlyHasStock, string search)
 		{
-			return View(prepareIndex(InventoryGroup, InventoryCategory, InventoryType, Warehouse, search));
+			return View(prepareIndex(InventoryGroup, InventoryCategory, InventoryType, Warehouse, chkOnlyHasStock, search));
 		}
 
-		private List<InventoryModel> prepareIndex(int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, string search)
+		private List<InventoryModel> prepareIndex(int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, bool? chkOnlyHasStock, string search)
 		{
 			if (!Util.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList))
 				RedirectToAction(nameof(HomeController.Index), "Home");
 
 			setViewBag();
-			Helper.setFilterViewBag(this, InventoryGroup, InventoryCategory, InventoryType, Warehouse, search);
+			Helper.setFilterViewBag(this, InventoryGroup, InventoryCategory, InventoryType, Warehouse, chkOnlyHasStock, search);
 
 			List<InventoryModel> models = null;
 			if (InventoryGroup != null)
-				models = get(null, InventoryGroup, InventoryCategory, InventoryType, Warehouse, OperatorController.getUsername(Session));
+				models = get(null, InventoryGroup, InventoryCategory, InventoryType, Warehouse, chkOnlyHasStock, OperatorController.getUsername(Session));
 
 			return models;
 		}
 
 		/* METHODS ********************************************************************************************************************************************/
 
-		private List<InventoryModel> get(Guid? id, int? GroupID, string CategoryID, string InventoryType, int? WarehouseID, string UserName)
+		private List<InventoryModel> get(Guid? id, int? GroupID, string CategoryID, string InventoryType, int? WarehouseID, bool? chkOnlyHasStock, string UserName)
         {
             List<InventoryModel> models = db.Database.SqlQuery<InventoryModel>(sqlGetInventory,
                     DBConnection.getSqlParameter(InventoryModel.COL_InventoryID.Name, id),
@@ -55,6 +55,7 @@ namespace ALMASWeb.Controllers
                     DBConnection.getSqlParameter(InventoryModel.COL_CategoryID.Name, CategoryID),
                     DBConnection.getSqlParameter(InventoryModel.COL_TypeID.Name, InventoryType),
                     DBConnection.getSqlParameter(InventoryModel.COL_WarehouseID.Name, WarehouseID),
+					DBConnection.getSqlParameter("FILTER_OnlyHasStock", chkOnlyHasStock),
 					DBConnection.getSqlParameter(OperatorModel.COL_UserName.Name, UserName)
 				).ToList();
 
@@ -353,6 +354,7 @@ namespace ALMASWeb.Controllers
 				Inventory.*,
 				FilteredInventory.Type AS TypeName,
 				FilteredInventory.Stock,
+				FilteredInventory.FormattedStock,
 				FilteredInventory.Category AS CategoryName,
 				FilteredInventory.Packing AS PackingInfo,
 				FilteredInventory.PriceTag
@@ -361,7 +363,8 @@ namespace ALMASWeb.Controllers
 					SELECT I.[InventoryID],I.[CategoryID],C.[Name] as [Category],I.[TypeID],T.[Name] as [Type],I.[InventoryName],
 					Y.[CurrencySymbol] + ' ' + convert(varchar(50),cast((CASE WHEN ISNULL(I.[PriceUnitTypeID],0) = 0 THEN CASE WHEN I.[ThirdUnitID] IS NULL THEN (CASE WHEN I.[SecUnitID] IS NULL THEN I.[Price] ELSE (I.[SecRatio] * I.[Price]) END) ELSE (I.[ThirdRatio] * I.[Price]) END ELSE I.[Price] END) as money),1) 
 					+ ' /' + CASE WHEN ISNULL(I.[PriceUnitTypeID],0) = 0 THEN CASE WHEN I.[ThirdUnitID] IS NULL THEN (CASE WHEN I.[SecUnitID] IS NULL THEN U1.[Code] ELSE U2.[Code] END) ELSE U3.[Code] END ELSE U1.[Code] END as [PriceTag],
-					Replace(convert(varchar(50),cast(ISNULL(SUM(S.[Stock]),0) as money),1),'.00','') + ' ' + U1.[Code] as Stock,
+					Replace(convert(varchar(50),cast(ISNULL(SUM(S.[Stock]),0) as money),1),'.00','') + ' ' + U1.[Code] as FormattedStock,
+					ISNULL(SUM(S.[Stock]),0) as Stock,
 					CASE WHEN U3.[Code] IS NOT NULL AND ISNULL(I.[ThirdRatio],0) > 0  THEN U3.[Code] + ' = ' + Replace(convert(varchar(50),cast(ISNULL(I.[ThirdRatio],0) as money),1),'.00','') +  ' ' + U1.[Code] + CHAR(13) + CHAR(10) + 
 					U2.[Code] + ' = ' + Replace(convert(varchar(50),cast(ISNULL(I.[SecRatio],0) as money),1),'.00','') +  ' ' + U1.[Code] 
 					ELSE 
@@ -384,7 +387,8 @@ namespace ALMASWeb.Controllers
 					SELECT I.[InventoryID],I.[CategoryID],C.[Name] as [Category],I.[TypeID],T.[Name] as [Type],I.[InventoryName],
 					Y.[CurrencySymbol] + ' ' + convert(varchar(50),cast((CASE WHEN ISNULL(I.[PriceUnitTypeID],0) = 0 THEN CASE WHEN I.[ThirdUnitID] IS NULL THEN (CASE WHEN I.[SecUnitID] IS NULL THEN I.[Price] ELSE (I.[SecRatio] * I.[Price]) END) ELSE (I.[ThirdRatio] * I.[Price]) END ELSE I.[Price] END) as money),1) 
 					+ ' /' + CASE WHEN ISNULL(I.[PriceUnitTypeID],0) = 0 THEN CASE WHEN I.[ThirdUnitID] IS NULL THEN (CASE WHEN I.[SecUnitID] IS NULL THEN U1.[Code] ELSE U2.[Code] END) ELSE U3.[Code] END ELSE U1.[Code] END as [PriceTag],
-					Replace(convert(varchar(50),cast(ISNULL(SUM(S.[Stock]),0) as money),1),'.00','') + ' ' + U1.[Code] as Stock,
+					Replace(convert(varchar(50),cast(ISNULL(SUM(S.[Stock]),0) as money),1),'.00','') + ' ' + U1.[Code] as FormattedStock,
+					ISNULL(SUM(S.[Stock]),0) as Stock,
 					CASE WHEN U3.[Code] IS NOT NULL AND ISNULL(I.[ThirdRatio],0) > 0  THEN U3.[Code] + ' = ' + Replace(convert(varchar(50),cast(ISNULL(I.[ThirdRatio],0) as money),1),'.00','') +  ' ' + U1.[Code] + CHAR(13) + CHAR(10) + 
 					U2.[Code] + ' = ' + Replace(convert(varchar(50),cast(ISNULL(I.[SecRatio],0) as money),1),'.00','') +  ' ' + U1.[Code] 
 					ELSE 
@@ -402,12 +406,12 @@ namespace ALMASWeb.Controllers
 					AND I.[TypeID] IN(SELECT [TypeID] FROM @FilterTypeList)
 					GROUP BY I.[InventoryID],I.[CategoryID],C.[Name],I.[TypeID],T.[Name],I.[InventoryName],
 					Y.[CurrencySymbol],I.[PriceUnitTypeID],I.[ThirdUnitID],I.[SecUnitID],I.[Price],
-					I.[SecRatio],I.[ThirdRatio],U1.[Code],U2.[Code],U3.[Code] --,I.[Picture]
-				
+					I.[SecRatio],I.[ThirdRatio],U1.[Code],U2.[Code],U3.[Code] --,I.[Picture]			
 				
 				) FilteredInventory
 				LEFT JOIN DWSystem.Inventory ON Inventory.InventoryID = FilteredInventory.InventoryID
-				
+			WHERE 1=1
+				AND (@FILTER_OnlyHasStock IS NULL OR @FILTER_OnlyHasStock = 0 OR FilteredInventory.Stock > 0)
 			ORDER BY [InventoryName]  
         ";
 

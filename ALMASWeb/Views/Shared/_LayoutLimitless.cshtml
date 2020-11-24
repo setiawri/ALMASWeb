@@ -52,7 +52,7 @@
                         <i class="icon-home4 mr-2"></i>Dashboard
                     </a>
                 </li>*@
-                <li class="nav-item @(LIBUtil.Util.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList) ? "" : "d-none")">
+                <li id="Menu_Inventory" class="nav-item @(LIBUtil.Util.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList) ? "" : "d-none")">
                     <a href="@Url.Action("Index", "Inventory", new { Area = "", rss=1 })" class="navbar-nav-link">
                         <i class="icon-dropbox mr-2"></i>Inventory
                     </a>
@@ -270,6 +270,29 @@
                 log += " <BR>";
             return log += newValue;
         }
+    }
+
+    function setCheckboxState(id, value) {
+        if (value == null || value == '' || value == 'False') {
+            $('#' + id).prop('checked', false); 
+            $('#' + id).attr("value", "false");
+        } else if (value == "True") {
+            $('#' + id).prop('checked', true);
+            $('#' + id).attr("value", "true");
+        }
+    }
+
+    //on click, set checkbox value
+    $(document).on("click", "[type='checkbox']", function (e) {
+        if (this.checked) {
+            $(this).attr("value", "true");
+        } else {
+            $(this).attr("value", "false");
+        }
+    });
+
+    function activateMenu(id) {
+        $('#Menu_' + id).addClass('active');
     }
 
 </script>

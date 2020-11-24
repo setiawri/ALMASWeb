@@ -44,8 +44,13 @@ namespace ALMASWeb.Controllers
         public ActionResult Login(OperatorModel model, string returnUrl)
         {
             //bypass login
-            //model.UserName = "ABCDE";
-            //model.Password = "admin";
+            if (true && Server.MachineName == "RQ-ASUS")
+            {
+                if (string.IsNullOrEmpty(model.UserName))
+                    model.UserName = "TO";
+                if (string.IsNullOrEmpty(model.Password))
+                    model.Password = "admin";
+            }
 
             string hashedPassword = HashPassword(model.Password);
             var result = (

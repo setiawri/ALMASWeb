@@ -118,7 +118,7 @@ namespace ALMASWeb.Models
 
         public bool? HasSpecification { get; set; }
 
-        public string Stock { get; set; }
+        public long Stock { get; set; }
 
         public string FormattedStock { get; set; }
 

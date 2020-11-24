@@ -52,11 +52,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row col-lg-2 @(ViewBag.InventoryTypeCount == 1 ? "d-none" : "")">
+                            <div class="row col-lg-2">
                                 <div class="col-lg-12">
                                     <label class="mb-0 InventoryTypeName">@ViewBag.InventoryTypeName</label>
                                     <div class="input-group">
                                         @Html.DropDownList("InventoryType", ViewBag.InventoryType as SelectList, "ALL", new { @class = "select2", @style = "height:auto;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-lg-2">
+                                <div class="col-lg-12">
+                                    <label class="mb-0">&nbsp;</label>
+                                    <div class="form-group d-flex align-items-center mt-2">
+                                        <div class="form-check mb-0">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" id="chkOnlyHasStock" name="chkOnlyHasStock" class="form-input-styled" checked data-fouc>
+                                                Ready Stock Only
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -120,6 +133,7 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        activateMenu('Inventory');
 
         if('@ViewBag.Filter_InventoryGroupFilter_InventoryGroup' != null && '@ViewBag.Filter_InventoryGroupFilter_InventoryGroup' != '')
             $('#InventoryGroup').val('@ViewBag.Filter_InventoryGroup');
@@ -127,6 +141,8 @@
         $('#InventoryCategory').val('@ViewBag.Filter_InventoryCategory');
         $('#InventoryType').val('@ViewBag.Filter_InventoryType');
         $('#Warehouse').val('@ViewBag.Filter_Warehouse');
+
+        setCheckboxState('chkOnlyHasStock', '@ViewBag.FILTER_OnlyHasStock');
 
         if('@ViewBag.Filter_Search' != null && '@ViewBag.Filter_Search' != '')
             setSearch('@ViewBag.Filter_Search'); //apply search
