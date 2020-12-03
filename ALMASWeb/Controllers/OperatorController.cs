@@ -93,15 +93,16 @@ namespace ALMASWeb.Controllers
             return RedirectToAction(nameof(InventoryController.Index), "Inventory");
         }
 
-        public static string HashPassword(string input)
+        public static string HashPassword(string value)
         {
-            if (string.IsNullOrEmpty(input))
+            //truncate if more than 10 digits
+            if (value.Length > 10)
+                value = value.Substring(0, 10);
+
+            if (string.IsNullOrEmpty(value))
                 return string.Empty;
             else
-            {
-                var hash = new System.Security.Cryptography.SHA1Managed().ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
-                return string.Concat(hash.Select(b => b.ToString("x2")));
-            }
+                return System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(value, "SHA1");
         }
 
         public static int getUserId(HttpSessionStateBase Session)

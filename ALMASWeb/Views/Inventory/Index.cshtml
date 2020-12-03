@@ -142,7 +142,8 @@
         $('#InventoryType').val('@ViewBag.Filter_InventoryType');
         $('#Warehouse').val('@ViewBag.Filter_Warehouse');
 
-        setCheckbox('chkOnlyHasStock', '@ViewBag.FILTER_OnlyHasStock', true);
+        if ('@ViewBag.FILTER_OnlyHasStock' != '')
+            $('#chkOnlyHasStock').val('@ViewBag.FILTER_OnlyHasStock');
 
         if('@ViewBag.Filter_Search' != null && '@ViewBag.Filter_Search' != '')
             setSearch('@ViewBag.Filter_Search'); //apply search
@@ -192,7 +193,7 @@
         $('#search').val(getSearch());
     });
 
-    function ViewImage (image) {
+    function ViewImage(image) {
         bootbox.alert({
             size: 'large',
             backdrop: true,
