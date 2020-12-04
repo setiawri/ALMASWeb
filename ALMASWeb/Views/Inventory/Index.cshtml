@@ -106,15 +106,15 @@
                             {
                                 foreach (var item in Model)
                                 {
-                                    <tr>
+                                    <tr class="@(item.Stock < 100 ? "bg-warning" : "")">
                                         <td><img style="max-width:100px; max-height:100px;" onclick="ViewImage('@LIBUtil.Util.getImageSource(item.Picture, null)')" src="@LIBUtil.Util.getImageSource(item.Picture, null)"></td>
                                         <td>@Html.DisplayFor(modelItem => item.InventoryID)</td>
                                         <td class=" @(ViewBag.InventoryCategoryCount == 1 ? "d-none" : "")">@Html.DisplayFor(modelItem => item.CategoryName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TypeName)</td>
                                         <td><div>@Html.DisplayFor(modelItem => item.InventoryName)</div></td>
                                         <td class="text-right">
-                                            <div><a href="javascript:void(0)" onclick="WarehouseList('@item.InventoryID')">@string.Format("{0:N0}", item.Stock)</a></div>
-                                            <div class="small mt-1">@Html.DisplayFor(modelItem => item.PackingInfo)</div>
+                                            <div><a href="javascript:void(0)" onclick="WarehouseList('@item.InventoryID')" class="@(item.Stock < 100 ? "text-dark" : "")">@string.Format("{0:N0}", item.Stock)</a></div>
+                                            <div class="small mt-1 @(item.Stock < 100 ? "text-white" : "")">@Html.DisplayFor(modelItem => item.PackingInfo)</div>
                                         </td>
                                         <td class="text-right">@string.Format("{0:N0}", item.PriceTag)</td>
                                     </tr>
