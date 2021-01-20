@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Root = "Home";
+    ViewBag.Title = "Home Page";
+}
+
+<div class="content-wrapper">
+    <!-- Content area -->
+    <div class="content">
+        <!-- Form inputs -->
+        <div class="card animated bounceInLeft">
+            <div class="card-header header-elements-inline">
+                <h4 class="card-title">LAPORAN</h4>
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "submitForm" }))
+                {
+                    <div class="row mt-0">
+                        <div class="row col-lg-5">
+                            <div class="col-lg-12">
+                                <label class="mb-1">Jenis Laporan</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("Reports", new SelectList(ViewBag.ReportList, "Value", "Text", "ReportA_get"), new { @class = "form-control select2" })
+                                    @*<select id="Reports" name="Reports" class="form-control select2">
+                                        <option value="ReportA_get">A. Pemasukan bahan baku</option>
+                                        <option value="ReportB_get">B. Pemakaian bahan baku</option>
+                                        <option value="ReportC_get">C. Pemakaian barang dalam proses dalam rangka kegiatan subkontrak</option>
+                                        <option value="ReportD_get">D. Pemasukan hasil produksi</option>
+                                        <option value="ReportE_get">E. Pengeluaran hasil produksi (PEB)</option>
+                                        <option value="ReportF_get">F. Mutasi bahan baku</option>
+                                        <option value="ReportG_get">G. Mutasi hasil produksi</option>
+                                        <option value="ReportH_get">H. Penyelesaian waste / scrap</option>
+                                    </select>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="row col-lg-6">
+                            <div class="col-lg-5">
+                                <label class="mb-1">No PIB</label>
+                                <div class="input-group">
+                                    <input type="text" name="NoPIB" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="row col-lg-6">
+                            <div class="col-lg-5">
+                                <label class="mb-1">Periode PIB</label>
+                                <div class="input-group mb-1">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            @Html.CheckBox("chkPIBPeriodStart", true, new { @class = "form-check-input check-styled" })
+                                            <span class="ml-2">Awal</span>
+                                        </div>
+                                    </div>
+                                    <input type="text" name="dtPIBPeriodStart" class="form-control daterange-picker text-center" />
+                                </div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            @Html.CheckBox("chkPIBPeriodEnd", true, new { @class = "form-check-input check-styled" })
+                                            <span class="ml-2">Akhir</span>
+                                        </div>
+                                    </div>
+                                    <input type="text" name="dtPIBPeriodEnd" class="form-control daterange-picker text-center" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mt-3 pl-0">
+                        <div class="form-group mb-0">
+                            <div class="btn-toolbar">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary form-control" onclick="Generate()"><i class="icon-file-excel mr-2"></i>Generate</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <!-- /form inputs -->
+    </div>
+    <!-- /content area -->
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        activateMenu('Home');
+
+    });
+
+</script>
+

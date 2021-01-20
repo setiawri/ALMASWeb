@@ -8,12 +8,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F68C7E84-DA53-4966-A694-F9EEB63C1376}</ProjectGuid>
+    <ProjectGuid>{CD562E6C-AFA0-4CBD-AEC8-995625CDAE1B}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ALMASWeb</RootNamespace>
-    <AssemblyName>ALMASWeb</AssemblyName>
+    <RootNamespace>ALMASKITEWeb</RootNamespace>
+    <AssemblyName>ALMASKITEWeb</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -57,9 +57,6 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
-    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rotativa.1.7.4-rc\lib\net45\Rotativa.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ComponentModel.Annotations.4.7.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
@@ -139,32 +136,16 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\InventoryTypeController.cs" />
-    <Compile Include="Controllers\InventoryController.cs" />
-    <Compile Include="Controllers\InventoryCategoryController.cs" />
-    <Compile Include="Controllers\WarehouseStockController.cs" />
-    <Compile Include="Controllers\WarehouseController.cs" />
-    <Compile Include="Controllers\InventoryGroupController.cs" />
     <Compile Include="DBContext.cs" />
     <Compile Include="Common\Helper.cs" />
     <Compile Include="Common\Enums.cs" />
-    <Compile Include="Controllers\ActivityLogsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OperatorController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\InventoryCategoryModel.cs" />
-    <Compile Include="Models\WarehouseAccessModel.cs" />
-    <Compile Include="Models\InventoryGroupAccessModel.cs" />
-    <Compile Include="Models\InventoryTypeModel.cs" />
-    <Compile Include="Models\WarehouseStockModel.cs" />
-    <Compile Include="Models\WarehouseModel.cs" />
-    <Compile Include="Models\InventoryModel.cs" />
-    <Compile Include="Models\InventoryGroupModel.cs" />
     <Compile Include="Models\OperatorPrivilegeDataManagementModel.cs" />
     <Compile Include="Models\OperatorModel.cs" />
-    <Compile Include="Models\ActivityLogsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -226,11 +207,6 @@
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.eot" />
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.ttf" />
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.woff" />
-    <Content Include="App_Browsers\qt.browser" />
-    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
-    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
-    <Content Include="Rotativa\wkhtmltoimage.exe" />
-    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -255,8 +231,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\ALMASKITEWeb.pubxml" />
     <None Include="Properties\PublishProfiles\ALMASWeb.pubxml" />
-    <Content Include="Views\Inventory\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\LIBUtil\LIBUtil\LIBUtil\LIBUtil.csproj">
