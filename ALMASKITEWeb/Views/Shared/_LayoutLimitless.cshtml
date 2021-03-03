@@ -276,8 +276,10 @@
     }
 
     function showBootboxMessage() {
-        if ('@ViewBag.BootboxMessage' != '') {
-            bootbox.alert({ backdrop: true, message: '@ViewBag.BootboxMessage' });
+        var msg = '@TempData["BootboxMessage"]';
+        if (msg !== '') {
+            msg = msg.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
+            bootbox.alert({ backdrop: true, message: msg });
         }
     }
 

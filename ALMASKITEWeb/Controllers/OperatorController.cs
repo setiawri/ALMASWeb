@@ -47,7 +47,7 @@ namespace ALMASKITEWeb.Controllers
             if (true && Server.MachineName == "RQ-ASUS")
             {
                 if (string.IsNullOrEmpty(model.UserName))
-                    model.UserName = "TO";
+                    model.UserName = "admin";
                 if (string.IsNullOrEmpty(model.Password))
                     model.Password = "admin";
             }

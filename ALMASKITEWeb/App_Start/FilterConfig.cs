@@ -17,7 +17,10 @@ namespace ALMASKITEWeb
     {
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.ActionDescriptor.ActionName != nameof(OperatorController.Login))
+            if (context.ActionDescriptor.ActionName != nameof(OperatorController.Login)
+                    && context.ActionDescriptor.ActionName != nameof(HomeController.PrintToPdf)
+                    && context.ActionDescriptor.ActionName != nameof(HomeController.Print)
+                )
             {
                 if (!OperatorController.isLoggedIn(context.HttpContext.Session))
                 {

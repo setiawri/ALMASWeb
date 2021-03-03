@@ -1,4 +1,5 @@
 ﻿@{
+    string ControllerName = "Home";
     ViewBag.Root = "Home";
     ViewBag.Title = "Home Page";
 }
@@ -20,16 +21,6 @@
                                 <label class="mb-1">Jenis Laporan</label>
                                 <div class="input-group">
                                     @Html.DropDownList("Reports", new SelectList(ViewBag.ReportList, "Value", "Text", "ReportA_get"), new { @class = "form-control select2" })
-                                    @*<select id="Reports" name="Reports" class="form-control select2">
-                                        <option value="ReportA_get">A. Pemasukan bahan baku</option>
-                                        <option value="ReportB_get">B. Pemakaian bahan baku</option>
-                                        <option value="ReportC_get">C. Pemakaian barang dalam proses dalam rangka kegiatan subkontrak</option>
-                                        <option value="ReportD_get">D. Pemasukan hasil produksi</option>
-                                        <option value="ReportE_get">E. Pengeluaran hasil produksi (PEB)</option>
-                                        <option value="ReportF_get">F. Mutasi bahan baku</option>
-                                        <option value="ReportG_get">G. Mutasi hasil produksi</option>
-                                        <option value="ReportH_get">H. Penyelesaian waste / scrap</option>
-                                    </select>*@
                                 </div>
                             </div>
                         </div>
@@ -40,7 +31,7 @@
                             <div class="col-lg-5">
                                 <label class="mb-1">No PIB</label>
                                 <div class="input-group">
-                                    <input type="text" name="NoPIB" class="form-control" />
+                                    <input type="text" id="NoPIB" name="NoPIB" class="form-control" />
                                 </div>
                             </div>
                         </div>
@@ -57,7 +48,7 @@
                                             <span class="ml-2">Awal</span>
                                         </div>
                                     </div>
-                                    <input type="text" name="dtPIBPeriodStart" class="form-control daterange-picker text-center" />
+                                    <input type="text" id="dtPIBPeriodStart" name="dtPIBPeriodStart" class="form-control daterange-picker text-center" />
                                 </div>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -66,20 +57,22 @@
                                             <span class="ml-2">Akhir</span>
                                         </div>
                                     </div>
-                                    <input type="text" name="dtPIBPeriodEnd" class="form-control daterange-picker text-center" />
+                                    <input type="text" id="dtPIBPeriodEnd" name="dtPIBPeriodEnd" class="form-control daterange-picker text-center" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 mt-3 pl-0">
-                        <div class="form-group mb-0">
-                            <div class="btn-toolbar">
-                                <div class="btn-group">
-                                    <button type="submit" class="btn btn-primary form-control" onclick="Generate()"><i class="icon-file-excel mr-2"></i>Generate</button>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="form-check form-check-switchery mt-3">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="Landscape" name="Landscape" class="form-check-input-switchery" value="true" />Landscape
+                        </label>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="javascript:void(0)" onclick="Print('Print','@ControllerName','true')" class="btn btn-primary"><i class="icon-printer2 mr-2"></i>Generate</a>
+                        <button type="submit" class="btn btn-success"><i class="icon-file-excel mr-2"></i>EXCEL</button>
+                        <a href="javascript:void(0)" onclick="Print('PrintToPdf','@ControllerName', 'false')" class="btn btn-danger"><i class="icon-file-pdf mr-2"></i>PDF</a>
                     </div>
                 }
             </div>
@@ -95,6 +88,30 @@
         activateMenu('Home');
 
     });
+
+    function Print(action, controller, opennewwindow) {
+        var url = '@Url.Action("__action", "__controller", new { Reports = "__data" })';
+        url = url.replace("__action", action).replace("__controller", controller);
+        url = url.replace("__data", getFilter());
+        OpenWindow(url, opennewwindow);
+    }
+
+    function getFilter() {
+        return $('#Reports').val()
+                + "&chkPIBPeriodStart=" + $('#chkPIBPeriodStart').val()
+                + "&dtPIBPeriodStart=" + $('#dtPIBPeriodStart').val()
+                + "&chkPIBPeriodEnd=" + $('#chkPIBPeriodEnd').val()
+                + "&dtPIBPeriodEnd=" + $('#dtPIBPeriodEnd').val()
+                + "&Landscape=" + $('#Landscape').val()
+            ;
+    }
+
+    function OpenWindow(url, opennewwindow) {
+        if (opennewwindow == "true")
+            window.open(url, '_blank');
+        else
+            window.location.href = url;
+    }
 
 </script>
 

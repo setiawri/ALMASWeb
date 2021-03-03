@@ -1,0 +1,100 @@
+﻿@using System.Data
+@model DataTable
+@{
+    Layout = null;
+
+    List<int> dateColumns = new List<int>();
+    List<int> numberColumns = new List<int>();
+    DateTime datetime;
+    string item;
+    if (Model != null && Model.Rows.Count > 0)
+    {
+        for(int i=0; i<Model.Columns.Count-1; i++)
+        {
+            item = Model.Rows[0][i].ToString();
+            if (DateTime.TryParse(item, out datetime))
+            {
+                dateColumns.Add(i);
+            }
+            else if(LIBUtil.Util.isNumeric(item))
+            {
+                numberColumns.Add(i);
+            }
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div id="print-area" class="bg-white mb-0 py-0">
+        <div style="page-break-after:always;display: block;clear: both;">
+
+            <div class="row mt-3">
+                <div class="col-sm-7">
+                    <div>
+                        <span style="font-size:16pt;font-weight:bold;">@ViewBag.Title</span>
+                    </div>
+                    <div>
+                        <span style="font-size:10pt;">@ViewBag.Filter</span>
+                    </div>
+
+                    <table cellpadding="5" cellspacing="0" style="margin-top:10px;border-collapse: collapse;font-size:10pt;">
+                        <thead style="border-bottom:1px solid black;">
+                            <tr>
+                                @if (Model != null)
+                                {
+                                    foreach (DataColumn column in Model.Columns)
+                                    {
+                                        if (column.ColumnName.IndexOf('_') > 0)
+                                        {
+                                            <th>@column.ColumnName.Substring(0, column.ColumnName.IndexOf('_'))</th>
+                                        }
+                                        else
+                                        {
+                                            <th>@column.ColumnName</th>
+                                        }
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Rows.Count > 0)
+                            {
+                                foreach (DataRow row in Model.Rows)
+                                {
+                                    <tr style="border-bottom:1px solid lightgray;">
+                                        @for(int i=0; i<Model.Columns.Count - 1; i++)
+                                        {
+                                            item = row[i].ToString();
+                                            if (dateColumns.Contains(i))
+                                            {
+                                                <td><span>@string.Format("{0:dd/MM/yy}", row[i])</span></td>
+                                            }
+                                            else if (numberColumns.Contains(i))
+                                            {
+                                                <td style="text-align:right;">@item</td>
+                                            }
+                                            else
+                                            {
+                                                <td style="word-wrap: break-word">@item</td>
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

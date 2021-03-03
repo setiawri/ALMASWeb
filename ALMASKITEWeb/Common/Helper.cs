@@ -27,6 +27,8 @@ namespace ALMASKITEWeb
         public const string IMAGEFOLDERPATH = "~" + IMAGEFOLDERURL;
         public const string NOIMAGEFILE = "no-image.jpg";
 
+        public const string APPCONFIG_REPORTEXCELPASSWORD = "reportexcelpassword";
+
         /* METHODS ********************************************************************************************************************************************/
 
         public static string getImageUrl(string imageName, HttpRequestBase Request, HttpServerUtilityBase Server)
