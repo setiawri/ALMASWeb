@@ -266,6 +266,8 @@ namespace ALMASKITEWeb.Controllers
             string password = Util.getConfigVariable(Helper.APPCONFIG_REPORTEXCELPASSWORD);
             if (!string.IsNullOrEmpty(password))
             {
+                if (password.ToLower() == "random")
+                    password = Util.RandomString(10);
                 ws.Protection.AllowFormatColumns = true;
                 ws.Protection.AllowFormatRows = true;
                 ws.Protection.SetPassword(password);
