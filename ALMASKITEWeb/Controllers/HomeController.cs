@@ -2,11 +2,9 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Web.Mvc;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-
 using LIBUtil;
 
 namespace ALMASKITEWeb.Controllers
@@ -51,6 +49,7 @@ namespace ALMASKITEWeb.Controllers
 
                 ViewBag.Title = title;
                 ViewBag.Filter = filter;
+
                 return Excel.GenerateExcelReport(filename, CompileExcelPackage(datatable, title, filter, Landscape));
             }
 
@@ -181,7 +180,7 @@ namespace ALMASKITEWeb.Controllers
              **********************************************************************************************************************************************/
 
             int headerGroupRowIndex = 4;
-            int headerCellRowIndex = headerGroupRowIndex+1;
+            int headerCellRowIndex = headerGroupRowIndex + 1;
             int defaultColumnWidth = 1;
 
             List<string> columnNames = datatable.Columns
@@ -211,17 +210,17 @@ namespace ALMASKITEWeb.Controllers
                     }
 
                     headerCells[headerGroups.LastIndexOf(headerGroupName)].Add(new ExcelCellFormat(defaultColumnWidth, ++headerCellColumnIndex, headerCellName));
-                } 
+                }
                 else
                 {
                     headerGroups.Add(null);
                     headerCells.Add(new List<ExcelCellFormat>());
-                    headerCells[headerCells.Count -1].Add(new ExcelCellFormat(defaultColumnWidth, ++headerCellColumnIndex, headerCellName));
+                    headerCells[headerCells.Count - 1].Add(new ExcelCellFormat(defaultColumnWidth, ++headerCellColumnIndex, headerCellName));
                 }
             }
 
             //write headers
-            for(int i=0; i<=headerGroups.Count-1; i++)
+            for (int i = 0; i <= headerGroups.Count - 1; i++)
                 Excel.editCellGroup(ws, headerGroupRowIndex, headerCells[i][0].ColumnIndex, headerCells[i][0].Width, headerGroups[i], null, headerCells[i].ToArray());
 
             //header styling
@@ -240,12 +239,12 @@ namespace ALMASKITEWeb.Controllers
              * POPULATE DATA
              **********************************************************************************************************************************************/
 
-            ws.Cells[headerCellRowIndex+1, 1].LoadFromDataTable(datatable, false);
-            Excel.setCellBorders(ws, headerCellRowIndex + 1, 1, headerCellRowIndex+1+datatable.Rows.Count, headerCellColumnIndex, ExcelBorderStyle.Thin);
+            ws.Cells[headerCellRowIndex + 1, 1].LoadFromDataTable(datatable, false);
+            Excel.setCellBorders(ws, headerCellRowIndex + 1, 1, headerCellRowIndex + 1 + datatable.Rows.Count, headerCellColumnIndex, ExcelBorderStyle.Thin);
 
             //autofit columns
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
-    
+
             /***********************************************************************************************************************************************
              * BUILD TITLE : done last so autofit columns doesn't resize title row
              **********************************************************************************************************************************************/
@@ -273,7 +272,7 @@ namespace ALMASKITEWeb.Controllers
                 ws.Protection.SetPassword(password);
                 //excelPackage.Save(password);
             }
-            
+
             return excelPackage;
         }
 

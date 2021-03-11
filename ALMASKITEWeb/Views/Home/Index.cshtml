@@ -71,7 +71,12 @@
 
                     <div class="mt-4">
                         <a href="javascript:void(0)" onclick="Print('Print','@ControllerName','true')" class="btn btn-primary"><i class="icon-printer2 mr-2"></i>Generate</a>
-                        <a href="javascript:void(0)" onclick="Print('PrintToPdf','@ControllerName', 'false')" class="btn btn-danger"><i class="icon-file-pdf mr-2"></i>PDF</a>
+
+                        @if (LIBUtil.Util.getConfigVariable("showpdfbutton") == "1")
+                        {
+                            <a href="javascript:void(0)" onclick="Print('PrintToPdf','@ControllerName', 'false')" class="btn btn-danger"><i class="icon-file-pdf mr-2"></i>PDF</a>
+                        }
+
                         <button type="submit" class="btn btn-success"><i class="icon-file-excel mr-2"></i>EXCEL</button>
                     </div>
                 }
