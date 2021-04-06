@@ -2,8 +2,8 @@
 using System.Web;
 using System.Web.Mvc;
 using System.IO;
-using ALMASWeb.Controllers;
 using LIBUtil;
+using LIBWebMVC;
 
 namespace ALMASWeb
 {
@@ -45,12 +45,12 @@ namespace ALMASWeb
         public static void setFilterViewBag(ControllerBase controller, int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, bool? chkOnlyHasStock, string search)
         {
             var ViewBag = controller.ViewBag;
-            ViewBag.Filter_InventoryGroup = Util.validateParameter(InventoryGroup);
-            ViewBag.Filter_InventoryCategory = Util.validateParameter(InventoryCategory);
-            ViewBag.Filter_InventoryType = Util.validateParameter(InventoryType);
-            ViewBag.Filter_Warehouse = Util.validateParameter(Warehouse);
-            ViewBag.FILTER_OnlyHasStock = Util.validateParameter(chkOnlyHasStock);
-            ViewBag.Filter_Search = Util.validateParameter(search);
+            ViewBag.Filter_InventoryGroup = UtilWebMVC.validateParameter(InventoryGroup);
+            ViewBag.Filter_InventoryCategory = UtilWebMVC.validateParameter(InventoryCategory);
+            ViewBag.Filter_InventoryType = UtilWebMVC.validateParameter(InventoryType);
+            ViewBag.Filter_Warehouse = UtilWebMVC.validateParameter(Warehouse);
+            ViewBag.FILTER_OnlyHasStock = UtilWebMVC.validateParameter(chkOnlyHasStock);
+            ViewBag.Filter_Search = UtilWebMVC.validateParameter(search);
         }
 
         /******************************************************************************************************************************************************/

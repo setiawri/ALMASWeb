@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using LIBUtil;
+using LIBWebMVC;
+using LIBExcel;
+
 
 namespace ALMASKITEWeb.Controllers
 {
@@ -36,7 +39,7 @@ namespace ALMASKITEWeb.Controllers
         {
             if (string.IsNullOrEmpty(NoPIB) && !chkPIBPeriodStart && !chkPIBPeriodEnd)
             {
-                Util.setBootboxMessage(this, "Silahkan isi No PIB atau Periode PIB");
+                UtilWebMVC.setBootboxMessage(this, "Silahkan isi No PIB atau Periode PIB");
                 ViewBag.ReportList = ReportList;
             }
             else

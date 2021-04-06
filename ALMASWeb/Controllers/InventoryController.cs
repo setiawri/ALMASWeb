@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Data;
-using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using ALMASWeb.Models;
 using LIBUtil;
+using LIBWebMVC;
 
 namespace ALMASWeb.Controllers
 {
@@ -32,7 +32,7 @@ namespace ALMASWeb.Controllers
 
 		private List<InventoryModel> prepareIndex(int? InventoryGroup, string InventoryCategory, string InventoryType, int? Warehouse, bool? chkOnlyHasStock, string search)
 		{
-			if (!Util.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList))
+			if (!UtilWebMVC.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList))
 				RedirectToAction(nameof(HomeController.Index), "Home");
 
 			setViewBag();
@@ -78,21 +78,21 @@ namespace ALMASWeb.Controllers
 
 		public void setViewBag()
 		{
-			DataSet dataset = DBConnection.getDataSet("DBContext", sqlPopulateDropdownlists,
+			DataSet dataset = DBConnection.getDataSet("DBContext", sqlPopulateDropdownlists, false,
 					DBConnection.getSqlParameter("UserName", OperatorController.getUsername(Session)));
 
-			ViewBag.Warehouse = Util.getSelectList(dataset.Tables[0], WarehouseModel.COL_WarehouseID.Name, WarehouseModel.COL_WarehouseName.Name);
+			ViewBag.Warehouse = UtilWebMVC.getSelectList(dataset.Tables[0], WarehouseModel.COL_WarehouseID.Name, WarehouseModel.COL_WarehouseName.Name);
 			ViewBag.WarehouseCount = dataset.Tables[0].Rows.Count;
 
-			ViewBag.InventoryGroup = Util.getSelectList(dataset.Tables[1], InventoryGroupModel.COL_GroupID.Name, InventoryGroupModel.COL_Name.Name);
+			ViewBag.InventoryGroup = UtilWebMVC.getSelectList(dataset.Tables[1], InventoryGroupModel.COL_GroupID.Name, InventoryGroupModel.COL_Name.Name);
 			ViewBag.InventoryGroupCount = dataset.Tables[1].Rows.Count;
 			ViewBag.InventoryCategoryName = dataset.Tables[1].Rows[0][InventoryGroupModel.COL_CategoryName.Name];
 			ViewBag.InventoryTypeName = dataset.Tables[1].Rows[0][InventoryGroupModel.COL_TypeName.Name];
 
-			ViewBag.InventoryCategory = Util.getSelectList(dataset.Tables[2], InventoryCategoryModel.COL_CategoryID.Name, InventoryCategoryModel.COL_Name.Name);
+			ViewBag.InventoryCategory = UtilWebMVC.getSelectList(dataset.Tables[2], InventoryCategoryModel.COL_CategoryID.Name, InventoryCategoryModel.COL_Name.Name);
 			ViewBag.InventoryCategoryCount = dataset.Tables[2].Rows.Count;
 
-			ViewBag.InventoryType = Util.getSelectList(dataset.Tables[3], InventoryTypeModel.COL_TypeID.Name, InventoryTypeModel.COL_Name.Name);
+			ViewBag.InventoryType = UtilWebMVC.getSelectList(dataset.Tables[3], InventoryTypeModel.COL_TypeID.Name, InventoryTypeModel.COL_Name.Name);
 			ViewBag.InventoryTypeCount = dataset.Tables[3].Rows.Count;
 		}
 

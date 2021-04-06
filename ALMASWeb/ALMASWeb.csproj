@@ -259,9 +259,17 @@
     <Content Include="Views\Inventory\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\LIBUtil\LIBUtil\LIBExcel\LIBExcel.csproj">
+      <Project>{7bf31c6f-ae56-4d77-aa71-13c994d21aeb}</Project>
+      <Name>LIBExcel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\LIBUtil\LIBUtil\LIBUtil\LIBUtil.csproj">
       <Project>{23013bfc-021e-426a-8a92-8c1c34836974}</Project>
       <Name>LIBUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\LIBUtil\LIBUtil\LIBWebMVC\LIBWebMVC.csproj">
+      <Project>{344268d2-6387-4ad2-88f5-dc743733abfc}</Project>
+      <Name>LIBWebMVC</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
