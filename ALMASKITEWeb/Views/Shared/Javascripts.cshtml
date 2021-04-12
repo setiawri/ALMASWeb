@@ -1,0 +1,522 @@
+﻿<!-- hidden value to reset datatable state save -->
+<span id="removeDatatablesStateSave" class="d-none">@ViewBag.RemoveDatatablesStateSave</span>
+
+<!--================================================================================================================================================================
+OTHER
+=================================================================================================================================================================-->
+<script type="text/javascript">
+
+    // TEXTBOX =====================================================================================================================================================
+
+    function getValueString(id) {
+        return trim($('#' + id).val());
+    }
+
+    function trim(value) { return $.trim(value); }
+
+    function getValueInt(id) {
+        return parseInt(getDefaultIfEmpty($('#'+id).val(), 0));
+    }
+
+    function getValueFloat(id) {
+        return parseFloat(getDefaultIfEmpty($('#' + id).val(), 0));
+    }
+
+    function setValue(id, value) { $('#' + id).val(value); }
+
+    function resetListbox(id) { $('#'+id).val('').trigger('change'); }
+
+    function setToZeroIfEmpty(control) {
+        $(control).val(getDefaultIfEmpty($(control).val(), 0));
+        if ($(control).val() == 0)
+            $(control).select();
+    }
+
+    function getDefaultIfEmpty(value, defaultValue) {
+        if (value == '')
+            return defaultValue;
+        else
+            return value;
+    }
+
+    function applyEventsToInputTextboxes() {
+        //45 = minus sign
+        //46 = dot sign
+        //48-57 = 0-9
+
+        $('.numericonly').bind('keypress', function (e) {
+            return event.charCode == 45 || event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57);
+        });
+
+        $('.positivenumericonly').bind('keypress', function (e) {
+            return event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57);
+        }).bind('keyup', function (e) { setToZeroIfEmpty($(this)); });
+
+        $('.integeronly').bind('keypress', function (e) {
+            return event.charCode == 45 || (event.charCode >= 48 && event.charCode <= 57);
+        });
+
+        $('.positiveintegeronly').bind('keypress', function (e) {
+            return (event.charCode >= 48 && event.charCode <= 57);
+        }).bind('keyup', function (e) { setToZeroIfEmpty($(this)); });
+
+        //doesn't work for input with type='number' because it cannot have comma
+        //}).bind('keyup', function (e) { $(this).val(formatN0($(this).val())); });
+
+        //allow editing text after initial select all on focus
+        $('input').on('focus', function (e) {
+            $(this)
+                .one('mouseup', function () {
+                    $(this).select();
+                    return false;
+                })
+                .select();
+        });
+    }
+
+    //format string to N0
+    function formatN0(value1, value2) {
+        return sum(value1, value2).toLocaleString();
+    }
+
+    function sum(value1, value2) {
+        if (value2 == null)
+            value2 = 0;
+
+        if (!$.isNumeric(value1))
+            value1 = value1.replace(/,/g, '');
+        if (!$.isNumeric(value2))
+            value2 = value2.replace(/,/g, '');
+
+        return parseInt(value1) + parseInt(value2);
+    }
+
+    // DROPDOWNLIST ================================================================================================================================================
+
+    function getMonthDropDownValue(start, change) {
+        var startingMonth = parseInt(start);
+        var changeMonth = parseInt(change);
+        var newMonth = startingMonth + changeMonth;
+        if (newMonth > 12) {
+            newMonth -= 12;
+        }
+        else if (newMonth == 0) {
+            newMonth += 12;
+        }
+        return newMonth;
+    }
+
+    function MonthsDropdownChange(id, action) {
+        if (action == '@EnumActions.Previous.ToString()') {
+            DropdownChange(id, getMonthDropDownValue($('#'+id).val(), -1));
+        } else {
+            DropdownChange(id, getMonthDropDownValue($('#'+id).val(), 1));
+        }
+    }
+
+    function DropdownChange(id, value) {
+        $('#'+id).val(value).trigger('change');
+    }
+
+    function getSelectedItem(ddlid, models) {
+        var result = getSelectedItems(ddlid, models);
+        if (result.length > 0)
+            return result[0];
+        else
+            return null;
+    }
+
+    function getSelectedItems(ddlid, models) {
+        var result = [];
+        var selecteditems = $('#' + ddlid + ' option:selected').map(function () { return this.value; }).get();
+        $.each(selecteditems, function (index, id) {
+            $.each(models, function (index, item) {
+                if (item.Id == id) {
+                    result.push(item);
+                    return false;
+                }
+            });
+        });
+        return result;
+    }
+
+    // NAVIGATION MENU =============================================================================================================================================
+
+    function activateNavigationMenu() {
+        $('#Menu_@ViewBag.SelectedNavigationMenu').addClass('active');
+    }
+
+    // BOOTBOX =====================================================================================================================================================
+
+    function showControllerMessage() { showMessage('@TempData["BootboxMessage"]'); }
+    function showMessage(message, idToSelectOnEscape) {
+        if (message !== '') {
+            message = message.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
+            bootbox.dialog({ backdrop: true, message: message, onEscape: function () { $('#'+idToSelectOnEscape).select(); } }); //.select() is not working
+        }
+    }
+
+    var spinnerDialog;
+    function showLoadingSpinner() { showSpinner('Loading...'); }
+    function showSpinner(message) {
+        spinnerDialog = bootbox.dialog({
+            message: '<p><i class="fa fa-spin fa-spinner"></i> ' + message + '</p>',
+            size: "small"
+        }).find('.modal-content').css({
+            'padding-top':'10px',
+            'font-size': '20pt',
+            'text-align': 'center',
+            'margin-top': function () {
+                var windowHeight = $(window).height();
+                var modalHeight = $(this).height();
+                var topMargin = (windowHeight - modalHeight) / 3;
+                return topMargin + "px";
+            }
+        }).find('.bootbox-close-button').css({
+            'display':'none'
+        });
+    }
+    function closeSpinner() {
+        spinnerDialog.modal('hide');
+    }
+
+    // CALENDAR ====================================================================================================================================================
+
+    $('.daterange-picker').daterangepicker({ singleDatePicker: true, locale: { format: 'YYYY/MM/DD' } });
+
+    $('.daterangepicker-multidate').daterangepicker({ singleDatePicker: false, locale: { format: 'YYYY/MM/DD' } }, function (start, end, label) {
+        daterangepickerCallback(start, end, label);
+    });
+
+    function setDateRangePicker(id, value) {
+        $('#' + id).data('daterangepicker').setStartDate(value);
+        $('#' + id).data('daterangepicker').setEndDate(value);
+    }
+
+    // CHECKBOXES ==================================================================================================================================================
+
+    function setCheckboxState(id, value) {
+        if (value == 'True')
+            value = true;
+        else if (value == 'False')
+            value = false;
+
+        $('#' + id).prop('checked', value);
+    }
+
+    function applyCheckboxStyling() {
+        $('.check-styled').uniform();
+        $('.check-styled-info').uniform({
+            wrapperClass: 'border-info-600 text-info-800'
+        });
+        $('.check-styled-danger').uniform({
+            wrapperClass: 'border-danger-600 text-danger-800'
+        });
+    }
+
+    // DATE MANIPULATOR ============================================================================================================================================
+
+    function parseJSONDate(value) {
+        return new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+        //return new Date(parseInt((value).match(/\d+/)[0])); //returns incorrect date when json date value is negative. (negative when earlier than year 1970)
+    }
+
+    var monthNames = ["Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sep", "Oct", "Nov", "Dec"];
+
+    function formatDate(value, format) {
+        var result = [];
+        var date = "";
+        var month = "";
+        var year = "";
+
+        var delimiter = getDateDelimiter(format);
+
+        format = format.split(delimiter);
+        for (i = 0; i < format.length; i++) {
+
+            if (format[i] == 'dd') {
+                result.push((('' + value.getDate()).length < 2 ? '0' : '') + value.getDate() + ' ');
+            }
+
+            if (format[i].includes('M')) {
+                if (format[i] == 'MMM') {
+                    month = monthNames[value.getMonth()];
+                } else if (format[i] == 'MM') {
+                    month = (('' + value.getMonth()).length < 2 ? '0' : '') + value.getMonth() + ' ';
+                }
+                result.push(month);
+            }
+
+            if (format[i] == 'yyyy')
+                result.push(value.getFullYear());
+        }
+
+
+        return result.filter(Boolean).join(delimiter);
+    }
+
+    function getDateDelimiter(value) {
+        if (value.split(" ").length > 1)
+            return " ";
+        else if (value.split("-").length > 1)
+            return "-";
+        else if (value.split("/").length > 1)
+            return "/";
+    }
+
+    // STRING MANIPULATOR ==========================================================================================================================================
+
+    function appendChange(originalText, oldValue, newValue, pretext) {
+        if (oldValue != newValue)
+            return append(originalText, pretext + "'" + oldValue + "' => '" + newValue + "'");
+        else
+            return originalText;
+    }
+
+    function append(originalText, newValue) {
+        if (originalText == "" && newValue != "")
+            return newValue;
+        else if (newValue == "")
+            return originalText;
+        else {
+            if (originalText != "")
+                originalText += " <BR>";
+            return originalText += newValue;
+        }
+    }
+
+    function appendWithDelimiter(originalText, newValue, delimiter) {
+        if (originalText == "" && newValue != "")
+            return newValue;
+        else if (newValue == "")
+            return originalText;
+        else {
+            if (originalText != "")
+                originalText += delimiter +' ';
+            return originalText += newValue;
+        }
+    }
+
+    // ACTIVITY LOGS ===============================================================================================================================================
+
+    function Log(id) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetLog", "ActivityLogs")',
+            data: {
+                ReffId: id
+            },
+            success: function (data) {
+                bootbox.dialog({
+                    title: 'Log',
+                    size: 'large',
+                    message: data.content,
+                    backdrop: true,
+                    onEscape: true
+                }).off("shown.bs.modal"); //scroll to top
+            }, //end success
+            error: function (result) {
+                bootbox.alert({ backdrop: true, message: "Error " + result });
+            } //end error
+        }); //end ajax
+    }
+
+    // AJAX ========================================================================================================================================================
+
+    function AjaxUpdate(action, controller, id, value) {
+        var url = '@Url.Action("__action", "__controller")';
+        url = url.replace("__action", action).replace("__controller", controller);
+        $.ajax({
+            type: "POST", url: url, data: { id: id, value: value },
+            success: function (data) {
+                if(data.Message != '')
+                    bootbox.alert({ backdrop: true, message: data.Message });
+            },
+            error: function (result) { bootbox.alert({ backdrop: true, message: "Error " + result }); }
+        });
+    }
+
+    function AjaxGet(id, title, size, action, controller) {
+        var url = '@Url.Action("__action", "__controller")';
+        url = url.replace("__action", action).replace("__controller", controller);
+        $.ajax({
+            type: "POST", url: url, data: { id: id },
+            success: function (data) { bootbox.dialog({ backdrop: true, onEscape: true, title: title, size: size, message: data.content }); },
+            error: function (result) { bootbox.alert({ backdrop: true, message: "Error " + result }); }
+        });
+    }
+
+    function AjaxGetDropdownlistData(id, action, controller) {
+        var url = '@Url.Action("__action", "__controller")';
+        url = url.replace("__action", action).replace("__controller", controller);
+        $('#'+id).select2({
+            placeholder: 'Pilih',
+            ajax: {
+                url: url,
+                data: function (params) {
+                    var query = {
+                        keyword: params.term,
+                        page: params.page || 1,
+                        take: 20
+                    }
+                    return query;
+                }
+            }
+        });
+    }
+
+    // DATATABLES PLUGIN ===========================================================================================================================================
+
+    var datatable = $('.datatable').DataTable({
+        autoWidth: false,
+        pagingType: 'full_numbers',
+        order: [[0, 'asc']],
+        bStateSave: true,
+        stateSaveCallback: function (settings, data) {
+            localStorage.setItem('DataTables_' + settings.sInstance, JSON.stringify(data))
+        },
+        stateLoadCallback: function (settings) {
+            return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance))
+        },
+        stateLoadParams: function (settings, data) {
+            if ($("#removeDatatablesStateSave").text() == "1") {
+                data.search.search = "";
+                data.start = 0;
+            }
+        },
+        columnDefs: [
+            { searchable: false, targets: "non-searchable" },
+            { orderable: false, targets: "non-sortable" }
+        ],
+        dom: '<"datatable-header"flp>' +
+            '<"datatable-scroll"t>' +
+            '<"datatable-footer"ilp>',
+        language: {
+            emptyTable: "Gunakan filter dan tekan tombol LOAD untuk menampilkan data",
+            search: '<span>Filter:</span> _INPUT_',
+            searchPlaceholder: 'enter keyword',
+            lengthMenu: '<span>Rows:</span> _MENU_',
+            paginate: {
+                'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;'
+            }
+        }
+    }).on('order.dt', function () {
+        applyCheckboxStyling();
+    });
+
+    function getSearch() {
+        if ((search == null || search == "") && $('input[aria-controls=DataTables_Table_0]').val() != undefined)
+            return $('input[aria-controls=DataTables_Table_0]').val();
+        else
+            return "";
+    }
+
+    function setSearch(search) {
+        if ($('input[aria-controls=DataTables_Table_0]').val() != undefined)
+            $('input[aria-controls=DataTables_Table_0]').val(search).keyup();
+    }
+
+    // MOUSE EVENTS ================================================================================================================================================
+
+    //disable scrollwheel mouse on input type number
+    $(document).on("wheel", "input[type=number]", function (e) {
+        $(this).blur();
+    });
+
+    //==============================================================================================================================================================
+
+    $(document).ready(function () {
+        setNavigationMenuVisibility();
+
+        $("input").attr("autocomplete", "off"); //turn off autocomplete
+        $('.form-input-styled').uniform(); //??
+        $('.select2').select2(); //apply filtering on dropdownlists
+
+        //checkbox styling
+        applyCheckboxStyling();
+
+        $('form:not(.filter) :input:visible:enabled:first').select(); //select content of first control
+
+        //on-off switch
+        if (document.querySelector('.form-check-input-switchery') != null) {
+            var elems = Array.prototype.slice.call(document.querySelectorAll('.form-check-input-switchery'));
+            elems.forEach(function (html) {
+                var switchery = new Switchery(html);
+            });
+        }
+
+        $('.notesbutton').click(function (event) {
+            var id = '#' + event.target.id;
+            $(id + '_Div').addClass('d-none');
+            $(id + '_Edit').removeClass('d-none');
+            $(id + '_Notes').select();
+        });
+
+        $('.showPassword').mousedown(function () {
+            $('.passwordTextbox').attr('type', 'text');
+        }).mouseup(function () {
+            $('.passwordTextbox').attr('type', 'password');
+        }).mouseout(function () {
+            $('.passwordTextbox').attr('type', 'password');
+        });
+
+        applyEventsToInputTextboxes(); //call here so it is executed initially
+
+        if (typeof applyLast !== 'undefined' && $.isFunction(applyLast)) applyLast();
+
+        activateNavigationMenu();
+
+        showControllerMessage();
+    });
+
+    function setNavigationMenuVisibility() {
+        $('#navbar-navigation').children('ul:first').children('li').each(function (index) { //main menu
+            var subMenu = $(this).children('div:first').children('div.dropdown-submenu'); //sub menu lvl 1
+
+            recursivelySetSubmenuVisibility(subMenu);
+
+            //hide main menu if has no children
+            subMenu = $(this).children('div:first').children('div.dropdown-submenu');
+            var notlabels = $(this).children('a:not(.dropdown-toggle)');
+            var label = $(this).children('a.dropdown-toggle');
+            var links = $(this).children('div:first').children('a');
+            if (subMenu.length == 0 && ((notlabels.length == 0 && links.length == 0) || label == 1)) {
+                $(this).remove();
+            }
+        });
+    }
+
+    function recursivelySetSubmenuVisibility(subMenu) {
+        if (subMenu.length == 0) {
+            return; //exit recursion
+        } else {
+            subMenu.each(function () {
+                var nextSubMenu = $(this).children('div:first').children('div.dropdown-submenu');
+                recursivelySetSubmenuVisibility(nextSubMenu);
+
+                nextSubMenu = $(this).children('div:first').children('div.dropdown-submenu');
+                var label = $(this).children('a.dropdown-toggle');
+                var links = $(this).children('div:first').children('a');
+                if (nextSubMenu.length == 0 && (links.length == 0 || label == 1))
+                    $(this).remove();
+            });
+        }
+    }
+
+    function ScrollTo(id,duration) {
+        $('html, body').animate({
+            scrollTop: $('#' + id).offset().top
+        }, duration);
+    }
+
+    function OpenWindow(url, opennewwindow) {
+        if (opennewwindow == "true")
+            window.open(url, '_blank');
+        else
+            window.location.href = url;
+    }
+
+    function emptyGuid() { return '00000000-0000-0000-0000-000000000000'; }
+</script>

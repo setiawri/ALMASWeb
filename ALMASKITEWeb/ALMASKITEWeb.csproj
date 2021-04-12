@@ -274,6 +274,7 @@
     <None Include="Properties\PublishProfiles\ALMASKITEWeb.pubxml" />
     <None Include="Properties\PublishProfiles\ALMASWeb.pubxml" />
     <Content Include="Views\Home\Print.cshtml" />
+    <Content Include="Views\Shared\Javascripts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\LIBUtil\LIBUtil\LIBExcel\LIBExcel.csproj">

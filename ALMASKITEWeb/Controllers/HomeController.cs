@@ -35,9 +35,9 @@ namespace ALMASKITEWeb.Controllers
 
         // POST: Home
         [HttpPost]
-        public ActionResult Index(string Reports, string NoPIB, bool chkPIBPeriodStart, DateTime? dtPIBPeriodStart, bool chkPIBPeriodEnd, DateTime? dtPIBPeriodEnd, bool? Landscape)
+        public ActionResult Index(string Reports, string NoPIB, bool chkPIBPeriod, DateTime? dtPIBPeriodStart, DateTime? dtPIBPeriodEnd, bool? Landscape)
         {
-            if (string.IsNullOrEmpty(NoPIB) && !chkPIBPeriodStart && !chkPIBPeriodEnd)
+            if (string.IsNullOrEmpty(NoPIB) && !chkPIBPeriod)
             {
                 UtilWebMVC.setBootboxMessage(this, "Silahkan isi No PIB atau Periode PIB");
                 ViewBag.ReportList = ReportList;
@@ -46,9 +46,9 @@ namespace ALMASKITEWeb.Controllers
             {
                 string title = ReportList.Where(x => x.Value == Reports).FirstOrDefault().Text;
                 string filename = string.Format("Laporan {0} {1:yyyy-MM-dd}.xlsx", title.Substring(0,1), DateTime.Now);
-                string filter = getFilter(NoPIB, chkPIBPeriodStart, dtPIBPeriodStart, chkPIBPeriodEnd, dtPIBPeriodEnd);
+                string filter = getFilter(NoPIB, chkPIBPeriod, dtPIBPeriodStart, dtPIBPeriodEnd);
 
-                DataTable datatable = get(Reports, NoPIB, chkPIBPeriodStart ? dtPIBPeriodStart : null, chkPIBPeriodEnd ? dtPIBPeriodEnd : null);
+                DataTable datatable = get(Reports, NoPIB, chkPIBPeriod ? dtPIBPeriodStart : null, chkPIBPeriod ? dtPIBPeriodEnd : null);
 
                 ViewBag.Title = title;
                 ViewBag.Filter = filter;
@@ -61,23 +61,23 @@ namespace ALMASKITEWeb.Controllers
 
         /* PRINT **********************************************************************************************************************************************/
 
-        public ActionResult Print(string Reports, string NoPIB, bool chkPIBPeriodStart, DateTime? dtPIBPeriodStart, bool chkPIBPeriodEnd, DateTime? dtPIBPeriodEnd, bool? Landscape)
+        public ActionResult Print(string Reports, string NoPIB, bool chkPIBPeriod, DateTime? dtPIBPeriodStart, DateTime? dtPIBPeriodEnd, bool? Landscape)
         {
             if (string.IsNullOrEmpty(Reports))
                 return RedirectToAction(nameof(Index));
 
             string title = getTitle(Reports);
             string filename = getFilename(title, "xlsx");
-            string filter = getFilter(NoPIB, chkPIBPeriodStart, dtPIBPeriodStart, chkPIBPeriodEnd, dtPIBPeriodEnd);
+            string filter = getFilter(NoPIB, chkPIBPeriod, dtPIBPeriodStart, dtPIBPeriodEnd);
 
-            DataTable datatable = get(Reports, NoPIB, chkPIBPeriodStart ? dtPIBPeriodStart : null, chkPIBPeriodEnd ? dtPIBPeriodEnd : null);
+            DataTable datatable = get(Reports, NoPIB, chkPIBPeriod ? dtPIBPeriodStart : null, chkPIBPeriod ? dtPIBPeriodEnd : null);
 
             ViewBag.Title = title;
             ViewBag.Filter = filter;
             return View(datatable);
         }
 
-        public ActionResult PrintToPdf(string Reports, string NoPIB, bool chkPIBPeriodStart, DateTime? dtPIBPeriodStart, bool chkPIBPeriodEnd, DateTime? dtPIBPeriodEnd, bool? Landscape)
+        public ActionResult PrintToPdf(string Reports, string NoPIB, bool chkPIBPeriod, DateTime? dtPIBPeriodStart, bool chkPIBPeriodEnd, DateTime? dtPIBPeriodEnd, bool? Landscape)
         {
             string title = getTitle(Reports);
             string filename = getFilename(title, "pdf");
@@ -88,7 +88,7 @@ namespace ALMASKITEWeb.Controllers
             else
                 orientation = Rotativa.Options.Orientation.Portrait;
 
-            return new Rotativa.ActionAsPdf(nameof(Print), new { Reports = Reports, NoPIB = NoPIB, chkPIBPeriodStart = chkPIBPeriodStart, dtPIBPeriodStart = dtPIBPeriodStart, chkPIBPeriodEnd = chkPIBPeriodEnd, dtPIBPeriodEnd = dtPIBPeriodEnd, Landscape = Landscape })
+            return new Rotativa.ActionAsPdf(nameof(Print), new { Reports = Reports, NoPIB = NoPIB, chkPIBPeriod = chkPIBPeriod, dtPIBPeriodStart = dtPIBPeriodStart, chkPIBPeriodEnd = chkPIBPeriodEnd, dtPIBPeriodEnd = dtPIBPeriodEnd, Landscape = Landscape })
             { FileName = filename, PageOrientation = orientation, PageSize = Rotativa.Options.Size.A4 };
         }
 
@@ -104,16 +104,17 @@ namespace ALMASKITEWeb.Controllers
             return string.Format("Laporan {0} {1:yyyy-MM-dd}.{2}", title.Substring(0, 1), DateTime.Now, extension);
         }
 
-        private string getFilter(string NoPIB, bool chkPIBPeriodStart, DateTime? dtPIBPeriodStart, bool chkPIBPeriodEnd, DateTime? dtPIBPeriodEnd)
+        private string getFilter(string NoPIB, bool chkPIBPeriod, DateTime? dtPIBPeriodStart, DateTime? dtPIBPeriodEnd)
         {
             string filter = "";
 
             if (!string.IsNullOrEmpty(NoPIB))
                 filter = Util.append(filter, "No PIB: " + NoPIB, ",");
-            if (chkPIBPeriodStart)
+            if (chkPIBPeriod)
+            {
                 filter = Util.append(filter, string.Format("Awal Periode PIB: {0:dd/MM/yy}", dtPIBPeriodStart), ",");
-            if (chkPIBPeriodEnd)
                 filter = Util.append(filter, string.Format("Akhir Periode PIB: {0:dd/MM/yy}", dtPIBPeriodEnd), ",");
+            }
 
             return filter;
         }

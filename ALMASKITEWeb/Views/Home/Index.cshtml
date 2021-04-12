@@ -15,6 +15,8 @@
             <div class="card-body">
                 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "submitForm" }))
                 {
+                    @Html.Hidden("dtPIBPeriodStart")
+                    @Html.Hidden("dtPIBPeriodEnd")
                     <div class="row mt-0">
                         <div class="row col-lg-5">
                             <div class="col-lg-12">
@@ -44,20 +46,10 @@
                                 <div class="input-group mb-1">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
-                                            @Html.CheckBox("chkPIBPeriodStart", true, new { @class = "form-check-input check-styled" })
-                                            <span class="ml-2">Awal</span>
+                                            @Html.CheckBox("chkPIBPeriod", true, new { @class = "form-check-input check-styled" })
                                         </div>
                                     </div>
-                                    <input type="text" id="dtPIBPeriodStart" name="dtPIBPeriodStart" class="form-control daterange-picker text-center" />
-                                </div>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            @Html.CheckBox("chkPIBPeriodEnd", true, new { @class = "form-check-input check-styled" })
-                                            <span class="ml-2">Akhir</span>
-                                        </div>
-                                    </div>
-                                    <input type="text" id="dtPIBPeriodEnd" name="dtPIBPeriodEnd" class="form-control daterange-picker text-center" />
+                                    <input type="text" id="dtPIBPeriod" name="dtPIBPeriod" class="form-control daterangepicker-multidate text-center" />
                                 </div>
                             </div>
                         </div>
@@ -90,7 +82,7 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        activateMenu('Home');
+        activateNavigationMenu('Home');
 
     });
 
@@ -103,19 +95,16 @@
 
     function getFilter() {
         return $('#Reports').val()
-                + "&chkPIBPeriodStart=" + $('#chkPIBPeriodStart').val()
+                + "&chkPIBPeriod=" + $('#chkPIBPeriod').val()
                 + "&dtPIBPeriodStart=" + $('#dtPIBPeriodStart').val()
-                + "&chkPIBPeriodEnd=" + $('#chkPIBPeriodEnd').val()
                 + "&dtPIBPeriodEnd=" + $('#dtPIBPeriodEnd').val()
                 + "&Landscape=" + $('#Landscape').val()
             ;
     }
 
-    function OpenWindow(url, opennewwindow) {
-        if (opennewwindow == "true")
-            window.open(url, '_blank');
-        else
-            window.location.href = url;
+    function daterangepickerCallback(start, end, label) {
+        $('#dtPIBPeriodStart').val(new Date(start).toDateString());
+        $('#dtPIBPeriodEnd').val(new Date(end).toDateString());
     }
 
 </script>
