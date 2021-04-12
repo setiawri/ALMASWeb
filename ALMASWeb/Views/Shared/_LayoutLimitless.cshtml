@@ -51,7 +51,7 @@
                         <i class="icon-home4 mr-2"></i>Dashboard
                     </a>
                 </li>*@
-                <li id="Menu_Inventory" class="nav-item @(LIBUtil.Util.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList) ? "" : "d-none")">
+                <li id="Menu_Inventory" class="nav-item @(LIBWebMVC.UtilWebMVC.hasAccess(Session, OperatorController.SESSION_OperatorPrivilegeDataManagement_InventoryList) ? "" : "d-none")">
                     <a href="@Url.Action("Index", "Inventory", new { Area = "", rss=1 })" class="navbar-nav-link">
                         <i class="icon-dropbox mr-2"></i>Inventory
                     </a>
