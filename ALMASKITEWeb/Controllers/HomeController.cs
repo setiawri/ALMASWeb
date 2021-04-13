@@ -169,12 +169,19 @@ namespace ALMASKITEWeb.Controllers
                     new SqlQueryParameter("PIBPeriodEnd", SqlDbType.DateTime, dtPIBPeriodEnd)
                 );
 
-            if(string.IsNullOrEmpty(result.ValueString))
-                return result.Datatable;
-            else
+            if(!string.IsNullOrEmpty(result.ValueString))
             {
                 UtilWebMVC.setBootboxMessage(this, result.ValueString);
                 return null;
+            }
+            else if(result.Datatable.Rows.Count == 0)
+            {
+                UtilWebMVC.setBootboxMessage(this, "Tidak terdapat data. Silahkan rubah filter dan coba lagi.");
+                return null;
+            }
+            else
+            {
+                return result.Datatable;
             }
         }
 
