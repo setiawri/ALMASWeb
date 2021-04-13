@@ -188,13 +188,17 @@ OTHER
         daterangepickerCallback(start, end, label);
     });
 
-    function setDateRangePicker(id, value) {
-        $('#' + id).data('daterangepicker').setStartDate(value);
-        $('#' + id).data('daterangepicker').setEndDate(value);
+    function setDateRangePickerWithStringDate(id, start, end) { setDateRangePicker(id, new Date(start), new Date(end)); }
+    function setDateRangePicker(id, start, end) {
+        $('#' + id).data('daterangepicker').setStartDate(start);
+        if(end != null)
+            $('#' + id).data('daterangepicker').setEndDate(end);
+        else
+            $('#' + id).data('daterangepicker').setEndDate(start);
     }
 
-    function setDateRangePickerStartDate(id, daterangepickerId) { $('#' + id).val($('#' + daterangepickerId).val().split(' - ')[0]); }
-    function setDateRangePickerEndDate(id, daterangepickerId) { $('#' + id).val($('#' + daterangepickerId).val().split(' - ')[1]); }
+    function setWithDateRangePickerStartDate(id, daterangepickerId) { $('#' + id).val($('#' + daterangepickerId).val().split(' - ')[0]); }
+    function setWithDateRangePickerEndDate(id, daterangepickerId) { $('#' + id).val($('#' + daterangepickerId).val().split(' - ')[1]); }
 
     // CHECKBOXES ==================================================================================================================================================
 
@@ -240,14 +244,14 @@ OTHER
         for (i = 0; i < format.length; i++) {
 
             if (format[i] == 'dd') {
-                result.push((('' + value.getDate()).length < 2 ? '0' : '') + value.getDate() + ' ');
+                result.push((('' + value.getDate()).length < 2 ? '0' : '') + value.getDate() + '');
             }
 
             if (format[i].includes('M')) {
                 if (format[i] == 'MMM') {
                     month = monthNames[value.getMonth()];
                 } else if (format[i] == 'MM') {
-                    month = (('' + value.getMonth()).length < 2 ? '0' : '') + value.getMonth() + ' ';
+                    month = (('' + value.getMonth()).length < 2 ? '0' : '') + (value.getMonth()+1) + '';
                 }
                 result.push(month);
             }

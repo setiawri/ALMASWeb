@@ -55,6 +55,8 @@ namespace ALMASKITEWeb.Controllers
             }
 
             ViewBag.ReportList = ReportList;
+            ViewBag.dtPIBPeriodStart = dtPIBPeriodStart;
+            ViewBag.dtPIBPeriodEnd = dtPIBPeriodEnd;
             return View();
         }
 
@@ -260,6 +262,17 @@ namespace ALMASKITEWeb.Controllers
             /***********************************************************************************************************************************************
              * POPULATE DATA
              **********************************************************************************************************************************************/
+
+            if(datatable != null && datatable.Rows.Count > 0)
+            {
+                DataRow row = datatable.Rows[0];
+                DateTime datetime;
+                for (int i=0; i<datatable.Columns.Count; i++)
+                {
+                    if(DateTime.TryParse(row[i].ToString(), out datetime))
+                        ws.Column(i+1).Style.Numberformat.Format = "dd/MM/yyyy";
+                }
+            }
 
             ws.Cells[headerCellRowIndex + 1, 1].LoadFromDataTable(datatable, false);
             Excel.setCellBorders(ws, headerCellRowIndex + 1, 1, headerCellRowIndex + 1 + datatable.Rows.Count, headerCellColumnIndex, ExcelBorderStyle.Thin);

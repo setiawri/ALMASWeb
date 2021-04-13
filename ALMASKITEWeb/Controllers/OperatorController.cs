@@ -94,14 +94,16 @@ namespace ALMASKITEWeb.Controllers
 
         public static string HashPassword(string value)
         {
-            //truncate if more than 10 digits
-            if (value.Length > 10)
-                value = value.Substring(0, 10);
-
             if (string.IsNullOrEmpty(value))
                 return string.Empty;
             else
+            {
+                //truncate if more than 10 digits
+                if (value.Length > 10)
+                    value = value.Substring(0, 10);
+
                 return System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(value, "SHA1");
+            }
         }
 
         public static int getUserId(HttpSessionStateBase Session)
