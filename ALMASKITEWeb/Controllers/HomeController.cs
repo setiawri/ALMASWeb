@@ -163,7 +163,7 @@ namespace ALMASKITEWeb.Controllers
             //GO
 
             SqlQueryResult result = DBConnection.executeQuery("DBContext", ReportStoredProcedureName, true,
-                    true,
+                    false,
                     new SqlQueryParameter("PIBNo", SqlDbType.VarChar, PIBNo),
                     new SqlQueryParameter("PIBPeriodStart", SqlDbType.DateTime, dtPIBPeriodStart),
                     new SqlQueryParameter("PIBPeriodEnd", SqlDbType.DateTime, dtPIBPeriodEnd)
