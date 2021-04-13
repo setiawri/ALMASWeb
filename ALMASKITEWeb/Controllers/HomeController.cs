@@ -38,10 +38,7 @@ namespace ALMASKITEWeb.Controllers
         public ActionResult Index(string Reports, string NoPIB, bool chkPIBPeriod, DateTime? dtPIBPeriodStart, DateTime? dtPIBPeriodEnd, bool? Landscape)
         {
             if (string.IsNullOrEmpty(NoPIB) && !chkPIBPeriod)
-            {
                 UtilWebMVC.setBootboxMessage(this, "Silahkan isi No PIB atau Periode PIB");
-                ViewBag.ReportList = ReportList;
-            }
             else
             {
                 string title = ReportList.Where(x => x.Value == Reports).FirstOrDefault().Text;
@@ -53,9 +50,11 @@ namespace ALMASKITEWeb.Controllers
                 ViewBag.Title = title;
                 ViewBag.Filter = filter;
 
-                return Excel.GenerateExcelReport(filename, CompileExcelPackage(datatable, title, filter, Landscape));
+                if(datatable != null)
+                    return Excel.GenerateExcelReport(filename, CompileExcelPackage(datatable, title, filter, Landscape));
             }
 
+            ViewBag.ReportList = ReportList;
             return View();
         }
 
@@ -138,10 +137,13 @@ namespace ALMASKITEWeb.Controllers
 
             //    @PIBNo varchar(MAX) = NULL,
             //    @PIBPeriodStart datetime = NULL,
-            //    @PIBPeriodEnd datetime = NULL
+            //    @PIBPeriodEnd datetime = NULL,
+            //    @returnValueString varchar(1000) = NULL OUTPUT
 
             //AS
             //BEGIN
+
+            //    SET @returnValueString = 'notification message';
 
             //    SELECT 
             //            0 AS [col A_group 1],
@@ -160,11 +162,20 @@ namespace ALMASKITEWeb.Controllers
             //END
             //GO
 
-            return DBConnection.getDataTable("DBContext", ReportStoredProcedureName, true,
-                    DBConnection.getSqlParameter("PIBNo", PIBNo), 
-                    DBConnection.getSqlParameter("PIBPeriodStart", dtPIBPeriodStart),
-                    DBConnection.getSqlParameter("PIBPeriodEnd", dtPIBPeriodEnd)
+            SqlQueryResult result = DBConnection.executeQuery("DBContext", ReportStoredProcedureName, true,
+                    true,
+                    new SqlQueryParameter("PIBNo", SqlDbType.VarChar, PIBNo),
+                    new SqlQueryParameter("PIBPeriodStart", SqlDbType.DateTime, dtPIBPeriodStart),
+                    new SqlQueryParameter("PIBPeriodEnd", SqlDbType.DateTime, dtPIBPeriodEnd)
                 );
+
+            if(string.IsNullOrEmpty(result.ValueString))
+                return result.Datatable;
+            else
+            {
+                UtilWebMVC.setBootboxMessage(this, result.ValueString);
+                return null;
+            }
         }
 
         /* EXCEL METHODS **************************************************************************************************************************************/

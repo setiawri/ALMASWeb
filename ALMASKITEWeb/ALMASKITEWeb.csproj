@@ -222,7 +222,7 @@
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.eot" />
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.ttf" />
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.woff" />
-    <Content Include="Notes.txt" />
+    <None Include="Notes.txt" />
     <Content Include="Rotativa\help-wkhtmltoimage.txt" />
     <Content Include="Rotativa\help-wkhtmltopdf.txt" />
     <Content Include="Rotativa\msvcp120.dll">

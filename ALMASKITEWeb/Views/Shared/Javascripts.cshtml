@@ -193,6 +193,9 @@ OTHER
         $('#' + id).data('daterangepicker').setEndDate(value);
     }
 
+    function setDateRangePickerStartDate(id, daterangepickerId) { $('#' + id).val($('#' + daterangepickerId).val().split(' - ')[0]); }
+    function setDateRangePickerEndDate(id, daterangepickerId) { $('#' + id).val($('#' + daterangepickerId).val().split(' - ')[1]); }
+
     // CHECKBOXES ==================================================================================================================================================
 
     function setCheckboxState(id, value) {

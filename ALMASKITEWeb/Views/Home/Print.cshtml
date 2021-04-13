@@ -9,14 +9,14 @@
     string item;
     if (Model != null && Model.Rows.Count > 0)
     {
-        for(int i=0; i<Model.Columns.Count-1; i++)
+        for (int i = 0; i < Model.Columns.Count - 1; i++)
         {
             item = Model.Rows[0][i].ToString();
             if (DateTime.TryParse(item, out datetime))
             {
                 dateColumns.Add(i);
             }
-            else if(LIBUtil.Util.isNumeric(item))
+            else if (LIBUtil.Util.isNumeric(item))
             {
                 numberColumns.Add(i);
             }
@@ -31,6 +31,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@ViewBag.Title</title>
+    @Html.Partial("Scripts")
 </head>
 <body>
     <div id="print-area" class="bg-white mb-0 py-0">
@@ -70,7 +71,7 @@
                                 foreach (DataRow row in Model.Rows)
                                 {
                                     <tr style="border-bottom:1px solid lightgray;">
-                                        @for(int i=0; i<Model.Columns.Count - 1; i++)
+                                        @for (int i = 0; i < Model.Columns.Count - 1; i++)
                                         {
                                             item = row[i].ToString();
                                             if (dateColumns.Contains(i))
@@ -98,3 +99,5 @@
     </div>
 </body>
 </html>
+
+@Html.Partial("Javascripts")
