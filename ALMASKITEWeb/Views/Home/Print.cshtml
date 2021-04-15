@@ -4,21 +4,21 @@
     Layout = null;
 
     List<int> dateColumns = new List<int>();
-    List<int> numberColumns = new List<int>();
-    DateTime datetime;
-    string item;
+    List<int> intColumns = new List<int>();
+    List<int> decimalColumns = new List<int>();
+    string[] columnName;
+    string datatype;
     if (Model != null && Model.Rows.Count > 0)
     {
         for (int i = 0; i < Model.Columns.Count - 1; i++)
         {
-            item = Model.Rows[0][i].ToString();
-            if (DateTime.TryParse(item, out datetime))
+            columnName = Model.Columns[i].ColumnName.Split('_');
+            datatype = columnName[0].ToLower();
+            if(datatype != "string")
             {
-                dateColumns.Add(i);
-            }
-            else if (LIBUtil.Util.isNumeric(item))
-            {
-                numberColumns.Add(i);
+                if (datatype == "date") { dateColumns.Add(i); }
+                else if (datatype == "int") { intColumns.Add(i); }
+                else if (datatype == "decimal") { decimalColumns.Add(i); }
             }
         }
     }
@@ -43,6 +43,9 @@
                         <span style="font-size:16pt;font-weight:bold;">@ViewBag.Title</span>
                     </div>
                     <div>
+                        <span style="font-size:10pt;">@Helper.COMPANYNAME</span>
+                    </div>
+                    <div>
                         <span style="font-size:10pt;">@ViewBag.Filter</span>
                     </div>
 
@@ -53,14 +56,7 @@
                                 {
                                     foreach (DataColumn column in Model.Columns)
                                     {
-                                        if (column.ColumnName.IndexOf('_') > 0)
-                                        {
-                                            <th>@column.ColumnName.Substring(0, column.ColumnName.IndexOf('_'))</th>
-                                        }
-                                        else
-                                        {
-                                            <th>@column.ColumnName</th>
-                                        }
+                                        <th>@column.ColumnName.Split('_')[1]</th>
                                     }
                                 }
                             </tr>
@@ -71,20 +67,23 @@
                                 foreach (DataRow row in Model.Rows)
                                 {
                                     <tr style="border-bottom:1px solid lightgray;">
-                                        @for (int i = 0; i < Model.Columns.Count - 1; i++)
+                                        @for (int i = 0; i < Model.Columns.Count; i++)
                                         {
-                                            item = row[i].ToString();
                                             if (dateColumns.Contains(i))
                                             {
-                                                <td><span>@string.Format("{0:dd/MM/yy}", row[i])</span></td>
+                                                <td>@string.Format("{0:dd/MM/yy}", row[i])</td>
                                             }
-                                            else if (numberColumns.Contains(i))
+                                            else if (intColumns.Contains(i))
                                             {
-                                                <td style="text-align:right;">@item</td>
+                                                <td style="text-align:right;">@string.Format("{0:N0}", row[i])</td>
+                                            }
+                                            else if (decimalColumns.Contains(i))
+                                            {
+                                                <td style="text-align:right;">@string.Format("{0:N2}", row[i])</td>
                                             }
                                             else
                                             {
-                                                <td style="word-wrap: break-word">@item</td>
+                                                <td style="word-wrap: break-word">@row[i].ToString()</td>
                                             }
                                         }
                                     </tr>

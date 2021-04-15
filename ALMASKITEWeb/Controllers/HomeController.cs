@@ -110,12 +110,10 @@ namespace ALMASKITEWeb.Controllers
             string filter = "";
 
             if (!string.IsNullOrEmpty(NoPIB))
-                filter = Util.append(filter, "No PIB: " + NoPIB, ",");
+                filter = Util.append(filter, "No: " + NoPIB, ", ");
+
             if (chkPIBPeriod)
-            {
-                filter = Util.append(filter, string.Format("Awal Periode PIB: {0:dd/MM/yy}", dtPIBPeriodStart), ",");
-                filter = Util.append(filter, string.Format("Akhir Periode PIB: {0:dd/MM/yy}", dtPIBPeriodEnd), ",");
-            }
+                filter = Util.append(filter, string.Format("Periode: {0:dd/MM/yy} s/d {1:dd/MM/yy}", dtPIBPeriodStart, dtPIBPeriodEnd), ", ");
 
             return filter;
         }
@@ -124,45 +122,44 @@ namespace ALMASKITEWeb.Controllers
 
         public DataTable get(string ReportStoredProcedureName, string PIBNo, DateTime? dtPIBPeriodStart, DateTime? dtPIBPeriodEnd)
         {
-            //string sql = @"
-            //        SELECT 
-            //            0 AS [col A_group 1],
-            //            0 AS [col B_group 1],
-            //            0 AS [col C],
-            //            0 AS colD_group2,
-            //            0 AS colE_group2,
-            //            0 AS colF_group2
-            //    ";
-            //return DBConnection.getDataTable("DBContext", sql, false);
+//--rubah CREATE ke ALTER untuk modify
+//CREATE PROCEDURE[DWSystem].[ReportA_get]
 
-            //CREATE PROCEDURE[DWSystem].[ReportA_get]
+//    @PIBNo varchar(MAX) = NULL,
+//    @PIBPeriodStart datetime = NULL,
+//    @PIBPeriodEnd datetime = NULL,
+//    @returnValueString varchar(1000) = NULL OUTPUT
 
-            //    @PIBNo varchar(MAX) = NULL,
-            //    @PIBPeriodStart datetime = NULL,
-            //    @PIBPeriodEnd datetime = NULL,
-            //    @returnValueString varchar(1000) = NULL OUTPUT
+//AS
+//BEGIN
 
-            //AS
-            //BEGIN
+//    --SET @returnValueString = 'notification message';
 
-            //    SET @returnValueString = 'notification message';
+//            --column name format: [datatype][columnname][optional: groupname]
+//            --[datatype]: string / decimal / int / date
+//            --[columnname]: name of column
+//            --[groupname]: column grouping name.optional.
+//            SELECT
 
-            //    SELECT 
-            //            0 AS [col A_group 1],
-            //            0 AS [col B_group 1],
-            //            0 AS [col C],
-            //            0 AS colD_group2,
-            //            0 AS colE_group2,
-            //            0 AS colF_group2
-            //    --FROM Table
+//    0 AS[string_col A_group 1],
+//	0 AS[string_col B_group 1],
+//	0 AS[date_col C],
+//	0 AS decimal_colD_group2,
 
-            //    --WHERE 1 = 1
-            //    --  AND(@PIBNo IS NULL OR Table.column LIKE '%' + @PIBNo + '%')
-            //    --  AND(@PIBPeriodStart IS NULL OR Table.column >= @PIBPeriodStart)
-            //    --  AND(@PIBPeriodEnd IS NULL OR Table.column < @PIBPeriodEnd)
+//    0 AS int_colE_group2,
 
-            //END
-            //GO
+//    0 AS decimal_colF_group2
+//    --FROM Table
+//    --WHERE 1 = 1
+//    --  AND(@PIBNo IS NULL OR Table.column LIKE '%' + @PIBNo + '%')
+//    --  AND(@PIBPeriodStart IS NULL OR Table.column >= @PIBPeriodStart)
+//    --  AND(@PIBPeriodEnd IS NULL OR Table.column < @PIBPeriodEnd)
+
+//END
+//GO
+
+            if(string.IsNullOrWhiteSpace(PIBNo))
+                PIBNo = null;
 
             SqlQueryResult result = DBConnection.executeQuery("DBContext", ReportStoredProcedureName, true,
                     false,
@@ -199,12 +196,15 @@ namespace ALMASKITEWeb.Controllers
             if (Landscape != null && (bool)Landscape)
                 ws.PrinterSettings.Orientation = eOrientation.Landscape;
 
+            int titleRowIndex = 1;
+            int companyNameRowIndex = titleRowIndex + 1;
+            int filterRowIndex = companyNameRowIndex + 1;
+            int headerGroupRowIndex = filterRowIndex + 2;
+            int headerCellRowIndex = headerGroupRowIndex + 1;
+
             /***********************************************************************************************************************************************
              * BUILD HEADERS
              **********************************************************************************************************************************************/
-
-            int headerGroupRowIndex = 4;
-            int headerCellRowIndex = headerGroupRowIndex + 1;
             int defaultColumnWidth = 1;
 
             List<string> columnNames = datatable.Columns
@@ -216,15 +216,16 @@ namespace ALMASKITEWeb.Controllers
             List<List<ExcelCellFormat>> headerCells = new List<List<ExcelCellFormat>>();
 
             string[] columnParts;
-            string headerCellName, headerGroupName;
+            string datatype, headerCellName, headerGroupName;
 
             //build headers
             int headerCellColumnIndex = 0;
             foreach (string columnName in columnNames)
             {
                 columnParts = columnName.Split('_');
-                headerCellName = columnParts[0];
-                headerGroupName = columnParts.Length == 2 ? columnParts[1] : "";
+                datatype = columnParts[0].ToLower();
+                headerCellName = columnParts[1];
+                headerGroupName = columnParts.Length == 3 ? columnParts[2] : "";
                 if (!string.IsNullOrEmpty(headerGroupName))
                 {
                     if (!headerGroups.Contains(headerGroupName))
@@ -240,6 +241,23 @@ namespace ALMASKITEWeb.Controllers
                     headerGroups.Add(null);
                     headerCells.Add(new List<ExcelCellFormat>());
                     headerCells[headerCells.Count - 1].Add(new ExcelCellFormat(defaultColumnWidth, ++headerCellColumnIndex, headerCellName));
+                }
+
+                //format column
+                if(datatype != "string")
+                {
+                    if (datatype == "date")
+                        ws.Column(headerCellColumnIndex).Style.Numberformat.Format = "dd/MM/yyyy";
+                    else if (datatype == "int")
+                    {
+                        ws.Column(headerCellColumnIndex).Style.Numberformat.Format = "#,##0";
+                        ws.Column(headerCellColumnIndex).Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+                    else if(datatype == "decimal")
+                    {
+                        ws.Column(headerCellColumnIndex).Style.Numberformat.Format = "#,##0.000";
+                        ws.Column(headerCellColumnIndex).Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
                 }
             }
 
@@ -263,16 +281,16 @@ namespace ALMASKITEWeb.Controllers
              * POPULATE DATA
              **********************************************************************************************************************************************/
 
-            if(datatable != null && datatable.Rows.Count > 0)
-            {
-                DataRow row = datatable.Rows[0];
-                DateTime datetime;
-                for (int i=0; i<datatable.Columns.Count; i++)
-                {
-                    if(DateTime.TryParse(row[i].ToString(), out datetime))
-                        ws.Column(i+1).Style.Numberformat.Format = "dd/MM/yyyy";
-                }
-            }
+            //if (datatable != null && datatable.Rows.Count > 0)
+            //{
+            //    DataRow row = datatable.Rows[0];
+            //    DateTime datetime;
+            //    for (int i = 0; i < datatable.Columns.Count; i++)
+            //    {
+            //        if (DateTime.TryParse(row[i].ToString(), out datetime))
+            //            ws.Column(i + 1).Style.Numberformat.Format = "dd/MM/yyyy";
+            //    }
+            //}
 
             ws.Cells[headerCellRowIndex + 1, 1].LoadFromDataTable(datatable, false);
             Excel.setCellBorders(ws, headerCellRowIndex + 1, 1, headerCellRowIndex + 1 + datatable.Rows.Count, headerCellColumnIndex, ExcelBorderStyle.Thin);
@@ -284,14 +302,14 @@ namespace ALMASKITEWeb.Controllers
              * BUILD TITLE : done last so autofit columns doesn't resize title row
              **********************************************************************************************************************************************/
 
-            int titleRowIndex = 1;
-            int filterRowIndex = titleRowIndex + 1;
             int columnWidth = (int)ws.Column(1).Width;
 
-            Excel.editCell(ws, titleRowIndex, 1, columnWidth, title, null, 0, 0, null);
+            Excel.editCell(ws, titleRowIndex, 1, columnWidth, title, null, 0, 0, ExcelHorizontalAlignment.Left);
             ws.Cells[titleRowIndex, 1, titleRowIndex, 1].Style.Font.Bold = true;
 
-            Excel.editCell(ws, filterRowIndex, 1, columnWidth, filter, null, 0, 0, null);
+            Excel.editCell(ws, companyNameRowIndex, 1, columnWidth, Helper.COMPANYNAME, null, 0, 0, ExcelHorizontalAlignment.Left);
+
+            Excel.editCell(ws, filterRowIndex, 1, columnWidth, filter, null, 0, 0, ExcelHorizontalAlignment.Left);
 
             /***********************************************************************************************************************************************
              * FINISHING
