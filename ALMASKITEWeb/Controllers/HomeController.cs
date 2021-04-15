@@ -158,14 +158,11 @@ namespace ALMASKITEWeb.Controllers
 //END
 //GO
 
-            if(string.IsNullOrWhiteSpace(PIBNo))
-                PIBNo = null;
-
             SqlQueryResult result = DBConnection.executeQuery("DBContext", ReportStoredProcedureName, true,
                     false,
-                    new SqlQueryParameter("PIBNo", SqlDbType.VarChar, PIBNo),
-                    new SqlQueryParameter("PIBPeriodStart", SqlDbType.DateTime, dtPIBPeriodStart),
-                    new SqlQueryParameter("PIBPeriodEnd", SqlDbType.DateTime, dtPIBPeriodEnd)
+                    new SqlQueryParameter("PIBNo", SqlDbType.VarChar, Util.wrapNullable(PIBNo)),
+                    new SqlQueryParameter("PIBPeriodStart", SqlDbType.DateTime, Util.wrapNullable(dtPIBPeriodStart)),
+                    new SqlQueryParameter("PIBPeriodEnd", SqlDbType.DateTime, Util.wrapNullable(dtPIBPeriodEnd))
                 );
 
             if(!string.IsNullOrEmpty(result.ValueString))

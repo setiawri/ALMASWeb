@@ -6,19 +6,51 @@
     List<int> dateColumns = new List<int>();
     List<int> intColumns = new List<int>();
     List<int> decimalColumns = new List<int>();
-    string[] columnName;
+    string[] columnData;
     string datatype;
+
+    List<string> headerNames = new List<string>();
+    string headerName;
+
+    List<string> groupHeaders = new List<string>();
+    List<int> groupHeaderSpans = new List<int>();
+    string groupHeaderName;
+    int lastIndex = -1;
+
     if (Model != null && Model.Rows.Count > 0)
     {
-        for (int i = 0; i < Model.Columns.Count - 1; i++)
+        for (int i = 0; i < Model.Columns.Count; i++)
         {
-            columnName = Model.Columns[i].ColumnName.Split('_');
-            datatype = columnName[0].ToLower();
-            if(datatype != "string")
+            columnData = Model.Columns[i].ColumnName.Split('_');
+            datatype = columnData[0].ToLower();
+            headerName = columnData[1];
+            if (columnData.Length > 2) { groupHeaderName = columnData[2]; } else { groupHeaderName = null; }
+
+            if (datatype != "string")
             {
                 if (datatype == "date") { dateColumns.Add(i); }
                 else if (datatype == "int") { intColumns.Add(i); }
                 else if (datatype == "decimal") { decimalColumns.Add(i); }
+            }
+
+            headerNames.Add(headerName);
+
+            if (groupHeaderName == null)
+            {
+                groupHeaders.Add("");
+                groupHeaderSpans.Add(1);
+            }
+            else
+            {
+                if((lastIndex = groupHeaders.LastIndexOf(groupHeaderName)) != -1)
+                {
+                    groupHeaderSpans[lastIndex] += 1;
+                }
+                else
+                {
+                    groupHeaders.Add(groupHeaderName);
+                    groupHeaderSpans.Add(1);
+                }
             }
         }
     }
@@ -54,9 +86,20 @@
                             <tr>
                                 @if (Model != null)
                                 {
-                                    foreach (DataColumn column in Model.Columns)
+                                    for (int i=0; i<groupHeaders.Count; i++)
                                     {
-                                        <th>@column.ColumnName.Split('_')[1]</th>
+                                        <th colspan="@groupHeaderSpans[i]" class="text-center" style="@(groupHeaderSpans[i] > 1 ? "border:1px solid lightgray;" : "")">
+                                            @groupHeaders[i]
+                                        </th>
+                                    }
+                                }
+                            </tr>
+                            <tr>
+                                @if (Model != null)
+                                {
+                                    foreach (string name in headerNames)
+                                    {
+                                        <th class="text-center" style="border: 1px solid lightgray;">@name</th>
                                     }
                                 }
                             </tr>
