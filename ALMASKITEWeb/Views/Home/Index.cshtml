@@ -100,7 +100,8 @@
 
     function getFilter() {
         return $('#Reports').val()
-                + "&chkPIBPeriod=" + $('#chkPIBPeriod').val()
+                + "&NoPIB=" + $('#NoPIB').val()
+                + "&chkPIBPeriod=" + getCheckboxValue('chkPIBPeriod')
                 + "&dtPIBPeriodStart=" + $('#dtPIBPeriodStart').val()
                 + "&dtPIBPeriodEnd=" + $('#dtPIBPeriodEnd').val()
                 + "&Landscape=" + $('#Landscape').val()
