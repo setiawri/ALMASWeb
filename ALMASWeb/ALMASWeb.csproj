@@ -52,14 +52,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=5.4.0.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.5.4.0\lib\net45\EPPlus.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
-    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rotativa.1.7.4-rc\lib\net45\Rotativa.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ComponentModel.Annotations.4.7.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
@@ -179,7 +173,6 @@
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.svg" />
     <Content Include="assets\css\icons\icomoon\styles.css" />
     <Content Include="assets\css\layout.min.css" />
-    <Content Include="assets\img\LoginBG.jpeg" />
     <Content Include="assets\img\no-image.jpg" />
     <Content Include="assets\img\profile.png" />
     <Content Include="assets\js\app.js" />
@@ -226,11 +219,6 @@
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.eot" />
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.ttf" />
     <Content Include="assets\css\icons\icomoon\fonts\icomoon.woff" />
-    <Content Include="App_Browsers\qt.browser" />
-    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
-    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
-    <Content Include="Rotativa\wkhtmltoimage.exe" />
-    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

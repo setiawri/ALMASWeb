@@ -107,7 +107,7 @@
                                 foreach (var item in Model)
                                 {
                                     <tr class="@(item.Stock < 100 ? "bg-warning" : "")">
-                                        <td><img style="max-width:100px; max-height:100px;" onclick="ViewImage('@LIBWebMVC.UtilWebMVC.getImageSource(item.Picture, null)')" src="@LIBUtil.Util.getImageSource(item.Picture, null)"></td>
+                                        <td><img style="max-width:100px; max-height:100px;" onclick="ViewImage('@LIBWebMVC.UtilWebMVC.getImageSource(item.Picture, null)')" src="@LIBWebMVC.UtilWebMVC.getImageSource(item.Picture, null)"></td>
                                         <td>@Html.DisplayFor(modelItem => item.InventoryID)</td>
                                         <td class=" @(ViewBag.InventoryCategoryCount == 1 ? "d-none" : "")">@Html.DisplayFor(modelItem => item.CategoryName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TypeName)</td>

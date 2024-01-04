@@ -21,7 +21,9 @@ namespace ALMASWeb
         /* PUBLIC PROPERTIES **********************************************************************************************************************************/
 
         public const string APP_VERSION = "v201114";
-        public const string COMPANYNAME = "PT. ALMAS";
+        public static bool isPTAlmas = false;
+
+        public static string COMPANYNAME = isPTAlmas ? "PT. ALMAS" : "CV. ALMAS";
 
         public const string IMAGEFOLDERURL = "/assets/img/";
         public const string IMAGEFOLDERPATH = "~"+ IMAGEFOLDERURL;

@@ -78,7 +78,7 @@ namespace ALMASWeb.Controllers
 
 		public void setViewBag()
 		{
-			DataSet dataset = DBConnection.getDataSet("DBContext", sqlPopulateDropdownlists, false,
+			DataSet dataset = DBConnection.getDataSet(DBConnection.getWebConfigConnectionString("DBContext"), sqlPopulateDropdownlists, false,
 					DBConnection.getSqlParameter("UserName", OperatorController.getUsername(Session)));
 
 			ViewBag.Warehouse = UtilWebMVC.getSelectList(dataset.Tables[0], WarehouseModel.COL_WarehouseID.Name, WarehouseModel.COL_WarehouseName.Name);

@@ -47,7 +47,7 @@ namespace ALMASWeb.Controllers
             if (true && Server.MachineName == "RQ-ASUS")
             {
                 if (string.IsNullOrEmpty(model.UserName))
-                    model.UserName = "TO";
+                    model.UserName = "admin";
                 if (string.IsNullOrEmpty(model.Password))
                     model.Password = "admin";
             }
@@ -107,21 +107,33 @@ namespace ALMASWeb.Controllers
 
         public static int getUserId(HttpSessionStateBase Session)
         {
-            return int.Parse(Session[SESSION_UserId].ToString());
+            if (Session == null)
+                return -1;
+            else
+                return int.Parse(Session[SESSION_UserId].ToString());
         }
 
         public static string getUsername(HttpSessionStateBase Session)
         {
-            return Session[SESSION_Username].ToString();
+            if (Session == null)
+                return null;
+            else
+                return Session[SESSION_Username].ToString();
         }
 
         public static bool isLoggedIn(HttpSessionStateBase session)
         {
-            return session[SESSION_UserId] != null;
+            if (session == null)
+                return false;
+            else
+                return session[SESSION_UserId] != null;
         }
 
         private static void setLoginSession(HttpSessionStateBase Session, object userId, object username, AccessList accessList)
         {
+            if (Session == null)
+                return;
+
             Session[SESSION_UserId] = userId == null ? null : userId.ToString();
             Session[SESSION_Username] = username == null ? null : username.ToString();
 
