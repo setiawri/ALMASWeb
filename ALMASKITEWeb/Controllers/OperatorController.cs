@@ -44,12 +44,12 @@ namespace ALMASKITEWeb.Controllers
         public ActionResult Login(OperatorModel model, string returnUrl)
         {
             //bypass login
-            if (true && Server.MachineName == "RQ-ASUS")
+            if (true && Server.MachineName == "RQ")
             {
                 if (string.IsNullOrEmpty(model.UserName))
                     model.UserName = "admin";
                 if (string.IsNullOrEmpty(model.Password))
-                    model.Password = "admin";
+                    model.Password = "almas2016";
             }
 
             string hashedPassword = HashPassword(model.Password);

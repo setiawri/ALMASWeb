@@ -20,7 +20,7 @@ namespace ALMASKITEWeb
 
         /* PUBLIC PROPERTIES **********************************************************************************************************************************/
 
-        public const string APP_VERSION = "v210109";
+        public const string APP_VERSION = "v240104";
         public const string COMPANYNAME = "PT. ALMAS";
 
         public const string IMAGEFOLDERURL = "/assets/img/";

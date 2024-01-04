@@ -158,7 +158,8 @@ namespace ALMASKITEWeb.Controllers
 //END
 //GO
 
-            SqlQueryResult result = DBConnection.executeQuery("DBContext", ReportStoredProcedureName, true,
+
+            SqlQueryResult result = DBConnection.executeQuery(DBConnection.getWebConfigConnectionString("DBContext"), ReportStoredProcedureName, true,
                     false,
                     new SqlQueryParameter("PIBNo", SqlDbType.VarChar, Util.wrapNullable(PIBNo)),
                     new SqlQueryParameter("PIBPeriodStart", SqlDbType.DateTime, Util.wrapNullable(dtPIBPeriodStart)),
